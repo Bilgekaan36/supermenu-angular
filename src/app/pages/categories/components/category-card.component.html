@@ -4,29 +4,31 @@
   [style.background-image]="'url(' + getBackgroundUrl() + ')'"
   (click)="navigateToCategory()">
   
-  <!-- Title Section - Upper Part -->
-  <div class="category-title-section">
-    <h2 [class]="getTextSizeClass() + ' font-display text-white tracking-tighter transform -skew-y-1 text-center drop-shadow-sm scale-y-125'">
-      @for (word of item.category_settings?.categoryTitle?.split(' '); track word) {
-        <span class="block">{{ word }}</span>
-      }
-    </h2>
-  </div>
-
-  <!-- Food Image - Center -->
-  <div class="category-image-section">
-    <div [class]="'aspect-square ' + getImageSizeClass()">
-      <img 
-        [src]="getImageUrl()" 
-        [alt]="item.title"
-        class="w-full h-full object-contain duration-500 group-hover:scale-110 overflow-visible">
+  <div class="category-card-container">
+    <!-- Title Section - Upper Part -->
+    <div class="category-title-section">
+      <h2 [class]="getTextSizeClass() + ' font-display text-white tracking-tighter transform -skew-y-1 text-center drop-shadow-sm scale-y-125'">
+        @for (word of item.category_settings?.categoryTitle?.split(' '); track word) {
+          <span class="block">{{ word }}</span>
+        }
+      </h2>
     </div>
-  </div>
 
-  <!-- Subtitle Section - Bottom Bar -->
-  <div class="category-subtitle-section">
-    <p class="text-sm sm:text-base md:text-lg font-black text-center tracking-tighter uppercase text-white">
-      {{ item.category_settings?.categorySubtitle }}
-    </p>
+    <!-- Food Image - Center (absolutely positioned) -->
+    <div class="category-image-section">
+      <div [class]="'aspect-square ' + getImageSizeClass()">
+        <img 
+          [src]="getImageUrl()" 
+          [alt]="item.title"
+          class="w-full h-full object-contain duration-500 group-hover:scale-110 overflow-visible">
+      </div>
+    </div>
+
+    <!-- Subtitle Section - Bottom Bar -->
+    <div class="category-subtitle-section">
+      <p class="text-sm sm:text-base md:text-lg font-black text-center tracking-tighter uppercase text-white">
+        {{ item.category_settings?.categorySubtitle }}
+      </p>
+    </div>
   </div>
 </div>

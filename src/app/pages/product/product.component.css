@@ -91,7 +91,7 @@
 .product-image {
   width: 100%;
   height: 20rem;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 0.5rem;
 }
 
@@ -100,7 +100,7 @@
 }
 
 .product-title {
-  font-family: var(--font-display);
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-size: 2rem;
   font-weight: bold;
   color: #1f2937;
@@ -163,7 +163,7 @@
 }
 
 .related-products h2 {
-  font-family: var(--font-display);
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-size: 1.5rem;
   font-weight: bold;
   color: #1f2937;

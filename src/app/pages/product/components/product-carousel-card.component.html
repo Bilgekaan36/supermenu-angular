@@ -3,7 +3,8 @@
   class="carousel-card cursor-pointer hover-scale"
   (click)="navigateToProduct()">
   
-  <div class="carousel-image-container">
+  <!-- Food Image - Center -->
+  <div class="flex items-center justify-center px-4">
     <div [class]="'aspect-square ' + getImageSizeClass()">
       <img 
         [src]="getImageUrl()" 
@@ -12,10 +13,16 @@
     </div>
   </div>
   
-  <div class="carousel-content">
-    <h3 class="carousel-title">{{ product.title }}</h3>
-    @if (product.price) {
-      <p class="carousel-price">{{ getFormattedPrice() }}</p>
-    }
+  <!-- Footer Section - Bottom Bar -->
+  <div class="text-left text-black">
+    <h2 class="text-sm sm:text-base md:text-md font-black tracking-tighter uppercase">
+      {{ product.title }}
+    </h2>
+    <p class="text-xs sm:text-xs md:text-sm text-gray-600">
+      {{ product.description || 'No description available' }}
+    </p>
+    <p class="text-md sm:text-md md:text-lg font-bold text-blue-300">
+      {{ product.price ? getFormattedPrice() : 'Price not available' }}
+    </p>
   </div>
 </div>

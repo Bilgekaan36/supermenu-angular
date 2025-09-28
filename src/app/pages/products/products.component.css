@@ -9,7 +9,7 @@
 }
 
 .category-title {
-  font-family: var(--font-display);
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-size: 2rem;
   font-weight: bold;
   color: #1f2937;
