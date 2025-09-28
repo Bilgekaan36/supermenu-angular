@@ -1,0 +1,28 @@
+<!-- src/app/pages/products/components/product-card.component.html -->
+<div 
+  class="product-card cursor-pointer hover-scale"
+  (click)="navigateToProduct()">
+  
+  <!-- Food Image - Center -->
+  <div class="flex items-center justify-center px-4">
+    <div [class]="'aspect-square ' + getImageSizeClass()">
+      <img 
+        [src]="getImageUrl()" 
+        [alt]="product.title"
+        class="w-full h-full object-contain duration-500 group-hover:scale-102 overflow-visible">
+    </div>
+  </div>
+  
+  <!-- Footer Section - Bottom Bar -->
+  <div class="text-left text-black">
+    <h2 class="text-sm sm:text-base md:text-md font-black tracking-tighter uppercase">
+      {{ product.title }}
+    </h2>
+    <p class="text-xs sm:text-xs md:text-sm text-gray-600">
+      {{ product.description || 'No description available' }}
+    </p>
+    <p class="text-md sm:text-md md:text-lg font-bold text-blue-300">
+      {{ product.price ? getFormattedPrice() : 'Price not available' }}
+    </p>
+  </div>
+</div>

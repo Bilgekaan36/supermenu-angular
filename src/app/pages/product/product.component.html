@@ -1,0 +1,89 @@
+<!-- src/app/pages/product/product.component.html -->
+<div class="product-container">
+  @if (isLoading()) {
+    <div class="loading-state">
+      <div class="animate-pulse bg-gray-200 h-64 rounded-lg mb-4"></div>
+      <div class="animate-pulse bg-gray-200 h-8 rounded mb-2"></div>
+      <div class="animate-pulse bg-gray-200 h-6 rounded mb-4"></div>
+      <div class="animate-pulse bg-gray-200 h-4 rounded mb-2"></div>
+      <div class="animate-pulse bg-gray-200 h-4 rounded"></div>
+    </div>
+  } @else if (error()) {
+    <div class="error-message">
+      <p>Error loading product: {{ error() }}</p>
+      <button class="back-button" (click)="goBack()">Zurück zu Produkten</button>
+    </div>
+  } @else if (!product()) {
+    <div class="empty-state">
+      <p>Produkt nicht gefunden.</p>
+      <button class="back-button" (click)="goBack()">Zurück zu Produkten</button>
+    </div>
+  } @else {
+    <div class="product-detail">
+      <!-- Produktbild -->
+      @if (product()?.product_image_url) {
+        <div class="product-image-container">
+          <img 
+            [src]="getImageUrl()" 
+            [alt]="product()!.title"
+            class="product-image">
+        </div>
+      }
+      
+      <!-- Produktinformationen -->
+      <div class="product-info">
+        <h1 class="product-title">{{ product()!.title }}</h1>
+        
+        @if (product()!.subtitle) {
+          <p class="product-subtitle">{{ product()!.subtitle }}</p>
+        }
+        
+        @if (product()!.description) {
+          <p class="product-description">{{ product()!.description }}</p>
+        }
+        
+        @if (product()!.price) {
+          <div class="price-section">
+            <span class="product-price">{{ getFormattedPrice() }}</span>
+          </div>
+        }
+        
+        <!-- Zutaten -->
+        @if (product()!.metadata.ingredients && product()!.metadata.ingredients!.length > 0) {
+          <div class="ingredients-section">
+            <h3>Zutaten:</h3>
+            <ul class="ingredients-list">
+              @for (ingredient of product()!.metadata.ingredients!; track ingredient) {
+                <li>{{ ingredient }}</li>
+              }
+            </ul>
+          </div>
+        }
+        
+        <!-- Allergene -->
+        @if (product()!.metadata.allergens && product()!.metadata.allergens!.length > 0) {
+          <div class="allergens-section">
+            <h3>Allergene:</h3>
+            <ul class="allergens-list">
+              @for (allergen of product()!.metadata.allergens!; track allergen) {
+                <li>{{ allergen }}</li>
+              }
+            </ul>
+          </div>
+        }
+      </div>
+    </div>
+    
+    <!-- Verwandte Produkte -->
+    @if (relatedProducts().length > 0) {
+      <div class="related-products">
+        <h2>Weitere Produkte</h2>
+        <div class="related-grid">
+          @for (relatedProduct of relatedProducts(); track relatedProduct.id) {
+            <app-product-carousel-card [product]="relatedProduct"></app-product-carousel-card>
+          }
+        </div>
+      </div>
+    }
+  }
+</div>

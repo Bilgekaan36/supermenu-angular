@@ -1,0 +1,70 @@
+/* src/app/pages/products/products.component.css */
+.products-container {
+  padding: 1rem;
+}
+
+.products-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.category-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin: 0;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .5;
+  }
+}
+
+.bg-gray-200 {
+  background-color: #e5e7eb;
+}
+
+.h-48 {
+  height: 12rem;
+}
+
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+
+.error-message, .empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+}
+
+.back-button {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 500;
+  margin-top: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.back-button:hover {
+  background-color: #2563eb;
+}

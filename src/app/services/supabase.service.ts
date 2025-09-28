@@ -22,8 +22,9 @@ export class SupabaseService {
   public readonly featuredProducts = computed(() => this.featuredProductsSignal());
 
   constructor() {
-    const supabaseUrl = 'YOUR_SUPABASE_URL'; // TODO: Set from environment
-    const supabaseAnonKey = 'YOUR_SUPABASE_ANON_KEY'; // TODO: Set from environment
+    // Environment Variables aus .env
+    const supabaseUrl = 'https://gcanfodziyqrfpobwmyb.supabase.co';
+    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjYW5mb2R6aXlxcmZwb2J3bXliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQyMTI1NTIsImV4cCI6MjA2OTc4ODU1Mn0.PS0lhRf9UXXohS-VglMNwtbHbyeeaTPOktpJhdErRvc';
 
     if (!supabaseUrl || !supabaseAnonKey) {
       throw new Error('Supabase URL and Anon Key are required');

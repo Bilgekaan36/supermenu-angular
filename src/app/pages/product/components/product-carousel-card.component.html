@@ -1,0 +1,21 @@
+<!-- src/app/pages/product/components/product-carousel-card.component.html -->
+<div 
+  class="carousel-card cursor-pointer hover-scale"
+  (click)="navigateToProduct()">
+  
+  <div class="carousel-image-container">
+    <div [class]="'aspect-square ' + getImageSizeClass()">
+      <img 
+        [src]="getImageUrl()" 
+        [alt]="product.title"
+        class="w-full h-full object-contain duration-500 group-hover:scale-102 overflow-visible">
+    </div>
+  </div>
+  
+  <div class="carousel-content">
+    <h3 class="carousel-title">{{ product.title }}</h3>
+    @if (product.price) {
+      <p class="carousel-price">{{ getFormattedPrice() }}</p>
+    }
+  </div>
+</div>

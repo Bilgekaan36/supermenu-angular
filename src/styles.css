@@ -93,3 +93,131 @@ body {
   transform: scale(1.1);
   transition: transform 0.3s ease;
 }
+
+/* Image Size Classes */
+.image-xs-normal { width: 3.5rem; height: 3.5rem; }
+.image-sm-normal { width: 4.5rem; height: 4.5rem; }
+.image-md-normal { width: 5.5rem; height: 5.5rem; }
+.image-lg-normal { width: 6.5rem; height: 6.5rem; }
+.image-xl-normal { width: 8rem; height: 8rem; }
+.image-xxl-normal { width: 9rem; height: 9rem; }
+
+.image-xs-large { width: 7rem; height: 7rem; }
+.image-sm-large { width: 9rem; height: 9rem; }
+.image-md-large { width: 11rem; height: 11rem; }
+.image-lg-large { width: 13rem; height: 13rem; }
+.image-xl-large { width: 16rem; height: 16rem; }
+.image-xxl-large { width: 18rem; height: 18rem; }
+
+.image-xs-extra { width: 10rem; height: 10rem; }
+.image-sm-extra { width: 12rem; height: 12rem; }
+.image-md-extra { width: 14rem; height: 14rem; }
+.image-lg-extra { width: 18rem; height: 18rem; }
+.image-xl-extra { width: 24rem; height: 24rem; }
+.image-xxl-extra { width: 28rem; height: 28rem; }
+
+/* Text Size Classes */
+.text-normal-xs { font-size: 1.125rem; line-height: 1.25rem; }
+.text-normal-sm { font-size: 1.25rem; line-height: 1.5rem; }
+.text-normal-md { font-size: 1.5rem; line-height: 1.75rem; }
+.text-normal-lg { font-size: 1.875rem; line-height: 2rem; }
+.text-normal-xl { font-size: 2.25rem; line-height: 2.5rem; }
+.text-normal-xxl { font-size: 3rem; line-height: 3.25rem; }
+
+.text-compact-xs { font-size: 0.875rem; line-height: 1rem; }
+.text-compact-sm { font-size: 1rem; line-height: 1.25rem; }
+.text-compact-md { font-size: 1.125rem; line-height: 1.5rem; }
+.text-compact-lg { font-size: 1.25rem; line-height: 1.75rem; }
+.text-compact-xl { font-size: 1.5rem; line-height: 2rem; }
+.text-compact-xxl { font-size: 1.875rem; line-height: 2.25rem; }
+
+.text-display-xs { font-size: 1.5rem; line-height: 1.75rem; }
+.text-display-sm { font-size: 1.875rem; line-height: 2rem; }
+.text-display-md { font-size: 2.25rem; line-height: 2.5rem; }
+.text-display-lg { font-size: 3rem; line-height: 3.25rem; }
+.text-display-xl { font-size: 3.75rem; line-height: 4rem; }
+.text-display-xxl { font-size: 4.5rem; line-height: 4.75rem; }
+
+.text-hero-xs { font-size: 2.25rem; line-height: 2.5rem; }
+.text-hero-sm { font-size: 3rem; line-height: 3.25rem; }
+.text-hero-md { font-size: 3.75rem; line-height: 4rem; }
+.text-hero-lg { font-size: 4.5rem; line-height: 4.75rem; }
+.text-hero-xl { font-size: 6rem; line-height: 6.25rem; }
+.text-hero-xxl { font-size: 7.5rem; line-height: 7.75rem; }
+
+/* Responsive Image Sizes */
+@media (min-width: 640px) {
+  .image-xs-normal { width: 4rem; height: 4rem; }
+  .image-sm-normal { width: 5rem; height: 5rem; }
+  .image-md-normal { width: 6.5rem; height: 6.5rem; }
+  .image-lg-normal { width: 8rem; height: 8rem; }
+  .image-xl-normal { width: 10rem; height: 10rem; }
+  .image-xxl-normal { width: 11rem; height: 11rem; }
+  
+  .image-xs-large { width: 8rem; height: 8rem; }
+  .image-sm-large { width: 10rem; height: 10rem; }
+  .image-md-large { width: 12rem; height: 12rem; }
+  .image-lg-large { width: 16rem; height: 16rem; }
+  .image-xl-large { width: 20rem; height: 20rem; }
+  .image-xxl-large { width: 22rem; height: 22rem; }
+}
+
+@media (min-width: 768px) {
+  .image-xs-normal { width: 5rem; height: 5rem; }
+  .image-sm-normal { width: 6rem; height: 6rem; }
+  .image-md-normal { width: 8rem; height: 8rem; }
+  .image-lg-normal { width: 9rem; height: 9rem; }
+  .image-xl-normal { width: 12rem; height: 12rem; }
+  .image-xxl-normal { width: 14rem; height: 14rem; }
+  
+  .image-xs-large { width: 10rem; height: 10rem; }
+  .image-sm-large { width: 12rem; height: 12rem; }
+  .image-md-large { width: 16rem; height: 16rem; }
+  .image-lg-large { width: 20rem; height: 20rem; }
+  .image-xl-large { width: 24rem; height: 24rem; }
+  .image-xxl-large { width: 28rem; height: 28rem; }
+}
+
+@media (min-width: 1024px) {
+  .image-xs-normal { width: 6rem; height: 6rem; }
+  .image-sm-normal { width: 7rem; height: 7rem; }
+  .image-md-normal { width: 9rem; height: 9rem; }
+  .image-lg-normal { width: 12rem; height: 12rem; }
+  .image-xl-normal { width: 14rem; height: 14rem; }
+  .image-xxl-normal { width: 16rem; height: 16rem; }
+  
+  .image-xs-large { width: 12rem; height: 12rem; }
+  .image-sm-large { width: 14rem; height: 14rem; }
+  .image-md-large { width: 18rem; height: 18rem; }
+  .image-lg-large { width: 24rem; height: 24rem; }
+  .image-xl-large { width: 28rem; height: 28rem; }
+  .image-xxl-large { width: 32rem; height: 32rem; }
+}
+
+/* Responsive Text Sizes */
+@media (min-width: 640px) {
+  .text-normal-xs { font-size: 1.25rem; line-height: 1.5rem; }
+  .text-normal-sm { font-size: 1.5rem; line-height: 1.75rem; }
+  .text-normal-md { font-size: 1.875rem; line-height: 2rem; }
+  .text-normal-lg { font-size: 2.25rem; line-height: 2.5rem; }
+  .text-normal-xl { font-size: 3rem; line-height: 3.25rem; }
+  .text-normal-xxl { font-size: 3.75rem; line-height: 4rem; }
+}
+
+@media (min-width: 768px) {
+  .text-normal-xs { font-size: 1.5rem; line-height: 1.75rem; }
+  .text-normal-sm { font-size: 1.875rem; line-height: 2rem; }
+  .text-normal-md { font-size: 2.25rem; line-height: 2.5rem; }
+  .text-normal-lg { font-size: 3rem; line-height: 3.25rem; }
+  .text-normal-xl { font-size: 3.75rem; line-height: 4rem; }
+  .text-normal-xxl { font-size: 4.5rem; line-height: 4.75rem; }
+}
+
+@media (min-width: 1024px) {
+  .text-normal-xs { font-size: 1.875rem; line-height: 2rem; }
+  .text-normal-sm { font-size: 2.25rem; line-height: 2.5rem; }
+  .text-normal-md { font-size: 3rem; line-height: 3.25rem; }
+  .text-normal-lg { font-size: 3.75rem; line-height: 4rem; }
+  .text-normal-xl { font-size: 4.5rem; line-height: 4.75rem; }
+  .text-normal-xxl { font-size: 6rem; line-height: 6.25rem; }
+}

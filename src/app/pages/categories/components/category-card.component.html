@@ -1,19 +1,32 @@
 <!-- src/app/pages/categories/components/category-card.component.html -->
 <div 
   class="category-card cursor-pointer hover-scale"
+  [style.background-image]="'url(' + getBackgroundUrl() + ')'"
   (click)="navigateToCategory()">
   
-  @if (item.product_image_url) {
-    <img 
-      [src]="item.product_image_url" 
-      [alt]="item.title"
-      class="category-image">
-  }
-  
-  <div class="category-content">
-    <h3 class="category-title">{{ item.title }}</h3>
-    @if (item.subtitle) {
-      <p class="category-subtitle">{{ item.subtitle }}</p>
-    }
+  <!-- Title Section - Upper Part -->
+  <div class="category-title-section">
+    <h2 [class]="getTextSizeClass() + ' font-display text-white tracking-tighter transform -skew-y-1 text-center drop-shadow-sm scale-y-125'">
+      @for (word of item.category_settings?.categoryTitle?.split(' '); track word) {
+        <span class="block">{{ word }}</span>
+      }
+    </h2>
+  </div>
+
+  <!-- Food Image - Center -->
+  <div class="category-image-section">
+    <div [class]="'aspect-square ' + getImageSizeClass()">
+      <img 
+        [src]="getImageUrl()" 
+        [alt]="item.title"
+        class="w-full h-full object-contain duration-500 group-hover:scale-110 overflow-visible">
+    </div>
+  </div>
+
+  <!-- Subtitle Section - Bottom Bar -->
+  <div class="category-subtitle-section">
+    <p class="text-sm sm:text-base md:text-lg font-black text-center tracking-tighter uppercase text-white">
+      {{ item.category_settings?.categorySubtitle }}
+    </p>
   </div>
 </div>

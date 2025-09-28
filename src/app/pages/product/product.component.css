@@ -1,0 +1,178 @@
+/* src/app/pages/product/product.component.css */
+.product-container {
+  padding: 1rem;
+  max-width: 42rem;
+  margin: 0 auto;
+}
+
+.loading-state {
+  padding: 2rem;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .5;
+  }
+}
+
+.bg-gray-200 {
+  background-color: #e5e7eb;
+}
+
+.h-64 {
+  height: 16rem;
+}
+
+.h-8 {
+  height: 2rem;
+}
+
+.h-6 {
+  height: 1.5rem;
+}
+
+.h-4 {
+  height: 1rem;
+}
+
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+
+.rounded {
+  border-radius: 0.25rem;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.error-message, .empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+}
+
+.back-button {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 500;
+  margin-top: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.back-button:hover {
+  background-color: #2563eb;
+}
+
+.product-detail {
+  margin-bottom: 2rem;
+}
+
+.product-image-container {
+  margin-bottom: 1.5rem;
+}
+
+.product-image {
+  width: 100%;
+  height: 20rem;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+
+.product-info {
+  padding: 0 1rem;
+}
+
+.product-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin: 0 0 0.5rem 0;
+}
+
+.product-subtitle {
+  font-size: 1.125rem;
+  color: #6b7280;
+  margin: 0 0 1rem 0;
+}
+
+.product-description {
+  font-size: 1rem;
+  color: #4b5563;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.6;
+}
+
+.price-section {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: #f3f4f6;
+  border-radius: 0.5rem;
+  text-align: center;
+}
+
+.product-price {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #059669;
+}
+
+.ingredients-section, .allergens-section {
+  margin-bottom: 1.5rem;
+}
+
+.ingredients-section h3, .allergens-section h3 {
+  font-size: 1.125rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin: 0 0 0.5rem 0;
+}
+
+.ingredients-list, .allergens-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ingredients-list li, .allergens-list li {
+  padding: 0.25rem 0;
+  color: #4b5563;
+}
+
+.related-products {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.related-products h2 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin: 0 0 1rem 0;
+  text-align: center;
+}
+
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}

@@ -1,0 +1,30 @@
+<!-- src/app/pages/products/products.component.html -->
+<div class="products-container">
+  <div class="products-header">
+    <h1 class="category-title">{{ categorySlug() | uppercase }}</h1>
+  </div>
+
+  @if (isLoading()) {
+    <div class="products-grid">
+      @for (item of [1,2,3,4,5,6]; track $index) {
+        <div class="animate-pulse bg-gray-200 h-48 rounded-lg"></div>
+      }
+    </div>
+  } @else if (error()) {
+    <div class="error-message">
+      <p>Error loading products: {{ error() }}</p>
+      <button class="back-button" (click)="goBack()">Zurück zu Kategorien</button>
+    </div>
+  } @else if (products().length === 0) {
+    <div class="empty-state">
+      <p>Keine Produkte in dieser Kategorie gefunden.</p>
+      <button class="back-button" (click)="goBack()">Zurück zu Kategorien</button>
+    </div>
+  } @else {
+    <div class="products-grid">
+      @for (product of products(); track product.id) {
+        <app-product-card [product]="product"></app-product-card>
+      }
+    </div>
+  }
+</div>

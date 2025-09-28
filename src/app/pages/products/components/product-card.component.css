@@ -1,0 +1,183 @@
+/* src/app/pages/products/components/product-card.component.css */
+.product-card {
+  background: white;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.product-card:hover {
+  transform: scale(1.02);
+}
+
+.product-image-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  min-height: 200px;
+}
+
+.product-content {
+  padding: 1rem;
+  background: white;
+}
+
+.product-title {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: bold;
+  margin: 0 0 0.5rem 0;
+  color: #1f2937;
+}
+
+.product-subtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0 0 0.5rem 0;
+}
+
+.product-description {
+  font-size: 0.875rem;
+  color: #4b5563;
+  margin: 0 0 0.75rem 0;
+  line-height: 1.4;
+}
+
+.product-price {
+  font-size: 1.125rem;
+  font-weight: bold;
+  color: #059669;
+  margin: 0;
+}
+
+/* Utility classes */
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.aspect-square {
+  aspect-ratio: 1;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.object-contain {
+  object-fit: contain;
+}
+
+.duration-500 {
+  transition-duration: 500ms;
+}
+
+.group-hover\:scale-102:hover {
+  transform: scale(1.02);
+}
+
+.overflow-visible {
+  overflow: visible;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-black {
+  color: #000;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.text-base {
+  font-size: 1rem;
+}
+
+.text-md {
+  font-size: 1.125rem;
+}
+
+.text-xs {
+  font-size: 0.75rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+}
+
+.font-black {
+  font-weight: 900;
+}
+
+.tracking-tighter {
+  letter-spacing: -0.025em;
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.text-gray-600 {
+  color: #4b5563;
+}
+
+.text-blue-300 {
+  color: #93c5fd;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+/* Responsive text sizes */
+@media (min-width: 640px) {
+  .sm\:text-base {
+    font-size: 1rem;
+  }
+  .sm\:text-md {
+    font-size: 1.125rem;
+  }
+  .sm\:text-xs {
+    font-size: 0.75rem;
+  }
+  .sm\:text-lg {
+    font-size: 1.125rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .md\:text-md {
+    font-size: 1.125rem;
+  }
+  .md\:text-sm {
+    font-size: 0.875rem;
+  }
+  .md\:text-lg {
+    font-size: 1.125rem;
+  }
+}
