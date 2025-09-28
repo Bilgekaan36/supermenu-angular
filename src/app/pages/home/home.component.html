@@ -1,0 +1,24 @@
+<!-- src/app/pages/home/home.component.html -->
+<div 
+  class="home-container"
+  (click)="handleHomeClick()">
+  
+  <div class="logo-section">
+    <img src="/eiscafe-logo.svg" alt="eiscafe-remi-logo" class="logo" />
+  </div>
+  
+  <div class="button-section">
+    <button class="tap-button">
+      <!-- Finger pointing down -->
+      <div class="button-content">
+        <!-- Lottie Animation wird hier später hinzugefügt -->
+        <div class="button-inner">
+          <span class="finger-emoji">👆</span>
+        </div>
+        
+        <!-- Ripple effect -->
+        <div class="ripple-effect"></div>
+      </div>
+    </button>
+  </div>
+</div>

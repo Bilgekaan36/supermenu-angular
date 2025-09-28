@@ -1,0 +1,30 @@
+/* src/app/pages/categories/categories.component.css */
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .5;
+  }
+}
+
+.bg-gray-200 {
+  background-color: #e5e7eb;
+}
+
+.h-64 {
+  height: 16rem;
+}
+
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+
+.px-1 {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+}

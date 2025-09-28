@@ -1,0 +1,95 @@
+/* Global Styles */
+@import url('https://fonts.googleapis.com/css2?family=Lobster:wght@400&display=swap');
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #e6e6e6;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  --radius: 0.625rem;
+  --font-display: 'Lobster', cursive;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #f3f3f3;
+  }
+  a:hover {
+    color: #747bff;
+  }
+}
+
+/* Custom Animations */
+@keyframes tap-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(147, 197, 253, 0.7);
+  }
+  20% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 5px rgba(147, 197, 253, 0.5);
+  }
+  40% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 15px rgba(147, 197, 253, 0.2);
+  }
+  60% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 25px rgba(147, 197, 253, 0);
+  }
+}
+
+.tap-pulse {
+  animation: tap-pulse 1.5s ease-in-out infinite;
+}
+
+/* Utility Classes */
+.container {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.min-h-screen {
+  min-height: 100vh;
+}
+
+.bg-eiscafe {
+  background-image: url('/src/assets/home_bg.jpeg');
+  background-size: cover;
+  background-position: center;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.hover-scale:hover {
+  transform: scale(1.1);
+  transition: transform 0.3s ease;
+}

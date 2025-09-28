@@ -1,0 +1,36 @@
+/* src/app/pages/categories/components/category-card.component.css */
+.category-card {
+  background: white;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease-in-out;
+}
+
+.category-card:hover {
+  transform: scale(1.02);
+}
+
+.category-image {
+  width: 100%;
+  height: 12rem;
+  object-fit: cover;
+}
+
+.category-content {
+  padding: 1rem;
+}
+
+.category-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin: 0 0 0.5rem 0;
+  color: #1f2937;
+}
+
+.category-subtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}

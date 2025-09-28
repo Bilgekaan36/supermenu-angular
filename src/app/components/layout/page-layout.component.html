@@ -1,0 +1,9 @@
+<!-- src/app/components/layout/page-layout.component.html -->
+<div class="mx-auto w-screen">
+  <div class="bg-white min-h-screen container mx-auto max-w-2xl">
+    @if (shouldShowHeader) {
+      <app-header></app-header>
+    }
+    <ng-content></ng-content>
+  </div>
+</div>

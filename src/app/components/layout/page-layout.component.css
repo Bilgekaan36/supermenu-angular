@@ -1,0 +1,21 @@
+/* src/app/components/layout/page-layout.component.css */
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.w-screen {
+  width: 100vw;
+}
+
+.bg-white {
+  background-color: white;
+}
+
+.min-h-screen {
+  min-height: 100vh;
+}
+
+.max-w-2xl {
+  max-width: 42rem;
+}

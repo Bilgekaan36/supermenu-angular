@@ -1,0 +1,31 @@
+/* src/app/components/layout/header.component.css */
+.header {
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  background: white;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #374151;
+  transition: color 0.2s ease;
+}
+
+.back-button:hover {
+  color: #1f2937;
+}
+
+.back-icon {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.back-text {
+  font-weight: 500;
+}

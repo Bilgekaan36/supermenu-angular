@@ -1,0 +1,16 @@
+<!-- src/app/pages/categories/categories.component.html -->
+@if (isLoading()) {
+  <div class="grid-2">
+    @for (item of [1,2,3,4,5,6]; track $index) {
+      <div class="animate-pulse bg-gray-200 h-64 rounded-lg"></div>
+    }
+  </div>
+} @else if (error()) {
+  <div>Error loading categories: {{ error() }}</div>
+} @else {
+  <div class="grid-2 px-1">
+    @for (item of categories(); track item.id) {
+      <app-category-card [item]="item"></app-category-card>
+    }
+  </div>
+}

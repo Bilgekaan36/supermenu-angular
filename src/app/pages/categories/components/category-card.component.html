@@ -1,0 +1,19 @@
+<!-- src/app/pages/categories/components/category-card.component.html -->
+<div 
+  class="category-card cursor-pointer hover-scale"
+  (click)="navigateToCategory()">
+  
+  @if (item.product_image_url) {
+    <img 
+      [src]="item.product_image_url" 
+      [alt]="item.title"
+      class="category-image">
+  }
+  
+  <div class="category-content">
+    <h3 class="category-title">{{ item.title }}</h3>
+    @if (item.subtitle) {
+      <p class="category-subtitle">{{ item.subtitle }}</p>
+    }
+  </div>
+</div>
