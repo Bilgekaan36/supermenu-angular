@@ -1,0 +1,20 @@
+<div class="login-wrap">
+  <div class="card">
+    <h1>Admin Login</h1>
+    <form (ngSubmit)="submit()">
+      <label>Email</label>
+      <input type="email" [(ngModel)]="email" name="email" required />
+
+      <label>Passwort</label>
+      <input type="password" [(ngModel)]="password" name="password" required />
+
+      @if (error()) {
+        <div class="error">{{ error() }}</div>
+      }
+
+      <button type="submit" [disabled]="loading()">Anmelden</button>
+    </form>
+  </div>
+</div>
+
+

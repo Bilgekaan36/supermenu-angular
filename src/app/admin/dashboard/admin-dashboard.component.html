@@ -1,0 +1,172 @@
+<div class="dashboard-container">
+  <mat-toolbar color="primary">
+    <mat-icon>restaurant</mat-icon>
+    <span>Produkt Dashboard</span>
+    <span class="spacer"></span>
+    <button mat-raised-button color="warn" (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      Abmelden
+    </button>
+  </mat-toolbar>
+  
+  <div *ngIf="loading()" class="loading">
+    <mat-spinner></mat-spinner>
+    <p>Lade Daten...</p>
+  </div>
+  
+  <div class="content">
+    <h1>Produkte verwalten</h1>
+    
+    <!-- Statistics Cards -->
+    <div class="stats-grid">
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="stat-content">
+            <div class="stat-number">{{ products().length }}</div>
+            <div class="stat-label">Gesamt Produkte</div>
+          </div>
+          <mat-icon class="stat-icon">inventory</mat-icon>
+        </mat-card-content>
+      </mat-card>
+      
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="stat-content">
+            <div class="stat-number">{{ getActiveProductsCount() }}</div>
+            <div class="stat-label">Aktive Produkte</div>
+          </div>
+          <mat-icon class="stat-icon">visibility</mat-icon>
+        </mat-card-content>
+      </mat-card>
+      
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="stat-content">
+            <div class="stat-number">{{ getInactiveProductsCount() }}</div>
+            <div class="stat-label">Inaktive Produkte</div>
+          </div>
+          <mat-icon class="stat-icon">visibility_off</mat-icon>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    
+    <!-- Search and Filters -->
+    <mat-card class="filters-card">
+      <mat-card-content>
+        <div class="filters-container">
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Suche</mat-label>
+            <input matInput [(ngModel)]="searchTerm" (input)="applyFilters()" placeholder="Nach Titel suchen...">
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Status</mat-label>
+            <mat-select [(value)]="statusFilter" (selectionChange)="applyFilters()">
+              <mat-option value="all">Alle</mat-option>
+              <mat-option value="active">Aktiv</mat-option>
+              <mat-option value="inactive">Inaktiv</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    
+    <!-- Empty State -->
+    <mat-card *ngIf="filteredProducts().length === 0 && !loading()" class="empty-card">
+      <mat-card-content>
+        <div class="empty-state">
+          <mat-icon class="empty-icon">inventory_2</mat-icon>
+          <h3>Keine Produkte gefunden</h3>
+          <p *ngIf="searchTerm || statusFilter !== 'all'; else noProductsAtAll">
+            Versuchen Sie die Filter zu ändern oder erstellen Sie ein neues Produkt.
+          </p>
+          <ng-template #noProductsAtAll>
+            <p>Erstellen Sie Ihr erstes Produkt, um loszulegen.</p>
+          </ng-template>
+          <button mat-raised-button color="primary" (click)="createNewItem('product')">
+            <mat-icon>add</mat-icon>
+            Neues Produkt
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    
+    <!-- Products Table -->
+    <mat-card *ngIf="filteredProducts().length > 0" class="table-card">
+      <mat-card-header>
+        <mat-card-title>
+          <div class="table-header">
+            <span>Produktliste</span>
+            <div class="table-actions">
+              <span class="result-count">{{ filteredProducts().length }} von {{ products().length }} Produkten</span>
+              <button mat-raised-button color="primary" (click)="createNewItem('product')">
+                <mat-icon>add</mat-icon>
+                Neues Produkt
+              </button>
+            </div>
+          </div>
+        </mat-card-title>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <table mat-table [dataSource]="filteredProducts()" class="products-table">
+          <!-- Title Column -->
+          <ng-container matColumnDef="title">
+            <th mat-header-cell *matHeaderCellDef>Produkt</th>
+            <td mat-cell *matCellDef="let product" class="product-cell">
+              <div class="product-info">
+                <div class="product-title">{{ product.title }}</div>
+                <div *ngIf="product.subtitle" class="product-subtitle">{{ product.subtitle }}</div>
+                <div *ngIf="product.category_path" class="product-category">
+                  <mat-chip color="accent">{{ product.category_path }}</mat-chip>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+          
+          <!-- Price Column -->
+          <ng-container matColumnDef="price">
+            <th mat-header-cell *matHeaderCellDef>Preis</th>
+            <td mat-cell *matCellDef="let product">
+              <div *ngIf="product.price; else noPrice" class="price">
+                €{{ product.price.toFixed(2) }}
+              </div>
+              <ng-template #noPrice>
+                <span class="no-price">Kein Preis</span>
+              </ng-template>
+            </td>
+          </ng-container>
+          
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Aktionen</th>
+            <td mat-cell *matCellDef="let product">
+              <div class="actions-container">
+                <button mat-icon-button color="primary" (click)="editItem(product)" matTooltip="Bearbeiten">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="deleteItem(product)" matTooltip="Löschen">
+                  <mat-icon>delete</mat-icon>
+                </button>
+                <mat-chip *ngIf="product.is_active; else inactive" color="primary" class="status-chip">
+                  <mat-icon matChipAvatar>visibility</mat-icon>
+                  Aktiv
+                </mat-chip>
+                <ng-template #inactive>
+                  <mat-chip class="status-chip inactive">
+                    <mat-icon matChipAvatar>visibility_off</mat-icon>
+                    Inaktiv
+                  </mat-chip>
+                </ng-template>
+              </div>
+            </td>
+          </ng-container>
+          
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.inactive-row]="!row.is_active"></tr>
+        </table>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

@@ -1,5 +1,9 @@
+/* Angular Material Styles */
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
 /* Global Styles */
 @import url('https://fonts.googleapis.com/css2?family=Lobster:wght@400&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;

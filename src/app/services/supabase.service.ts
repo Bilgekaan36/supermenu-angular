@@ -7,7 +7,7 @@ import { Item, Database } from '../models/item.model';
   providedIn: 'root'
 })
 export class SupabaseService {
-  private supabase: SupabaseClient<Database>;
+  private supabase: SupabaseClient<any>;
   
   // Signals für State Management
   private itemsSignal = signal<Item[]>([]);
@@ -30,7 +30,7 @@ export class SupabaseService {
       throw new Error('Supabase URL and Anon Key are required');
     }
 
-    this.supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
+    this.supabase = createClient(supabaseUrl, supabaseAnonKey, {
       auth: {
         persistSession: false, // Für Public Menu nicht nötig
       },
@@ -167,6 +167,112 @@ export class SupabaseService {
       return data as Item[];
     } catch (error) {
       console.error('Error fetching featured products:', error);
+      throw error;
+    }
+  }
+
+  // ===== ADMIN CRUD OPERATIONS =====
+
+  // Fetch all items for admin (including inactive)
+  async fetchAllItems(restaurantSlug: string): Promise<Item[]> {
+    try {
+      const { data, error } = await this.supabase
+        .from('items')
+        .select('*')
+        .eq('restaurant_slug', restaurantSlug)
+        .order('sort_order', { ascending: true });
+
+      if (error) {
+        console.error('Admin fetch all items error:', error);
+        throw new Error(`Failed to fetch all items: ${error.message}`);
+      }
+
+      return data as Item[];
+    } catch (error) {
+      console.error('Error fetching all items:', error);
+      throw error;
+    }
+  }
+
+  // Create new item
+  async createItem(item: any): Promise<Item> {
+    try {
+      const { data, error } = await this.supabase
+        .from('items')
+        .insert(item as any)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Create item error:', error);
+        throw new Error(`Failed to create item: ${error.message}`);
+      }
+
+      return data as Item;
+    } catch (error) {
+      console.error('Error creating item:', error);
+      throw error;
+    }
+  }
+
+  // Update item
+  async updateItem(id: string, updates: any): Promise<Item> {
+    try {
+      const { data, error } = await this.supabase
+        .from('items')
+        .update({ ...updates, updated_at: new Date().toISOString() } as any)
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Update item error:', error);
+        throw new Error(`Failed to update item: ${error.message}`);
+      }
+
+      return data as Item;
+    } catch (error) {
+      console.error('Error updating item:', error);
+      throw error;
+    }
+  }
+
+  // Delete item
+  async deleteItem(id: string): Promise<void> {
+    try {
+      const { error } = await this.supabase
+        .from('items')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        console.error('Delete item error:', error);
+        throw new Error(`Failed to delete item: ${error.message}`);
+      }
+    } catch (error) {
+      console.error('Error deleting item:', error);
+      throw error;
+    }
+  }
+
+  // Toggle item active status
+  async toggleItemStatus(id: string, isActive: boolean): Promise<Item> {
+    return this.updateItem(id, { is_active: isActive });
+  }
+
+  // Update sort order for multiple items
+  async updateSortOrder(items: { id: string; sort_order: number }[]): Promise<void> {
+    try {
+      const updates = items.map(item => 
+        this.supabase
+          .from('items')
+          .update({ sort_order: item.sort_order, updated_at: new Date().toISOString() } as any)
+          .eq('id', item.id)
+      );
+
+      await Promise.all(updates);
+    } catch (error) {
+      console.error('Error updating sort order:', error);
       throw error;
     }
   }
