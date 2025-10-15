@@ -5,7 +5,59 @@
   </h2>
   
   <mat-dialog-content>
-    <form [formGroup]="productForm" class="product-form">
+    <div class="dialog-layout">
+      <!-- Left Side: Scrollable Form -->
+      <div class="form-section">
+
+              <!-- Produktbild Auswahl -->
+      <h3 class="section-title">
+        <mat-icon>image</mat-icon>&nbsp;Produktbild
+      </h3>
+      <div class="image-selection-container">
+        <div class="selected-image-preview" *ngIf="selectedProductImage">
+          <img 
+            id="product-image-preview"
+            [src]="resolveImageUrl(selectedProductImage, 'product')" 
+            [alt]="'Produktbild'" 
+            (error)="onImageError($event)"
+            (load)="onImageLoad($event)" />
+          <div class="image-overlay">
+            <button mat-icon-button color="warn" (click)="selectedProductImage = undefined">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </div>
+        <button mat-raised-button color="primary" (click)="openImageSelection('product')" class="select-image-btn">
+          <mat-icon>photo_library</mat-icon>
+          {{ selectedProductImage ? 'Anderes Bild wählen' : 'Bild auswählen' }}
+        </button>
+      </div>
+
+      <!-- Hintergrundbild Auswahl -->
+      <h3 class="section-title">
+        <mat-icon>wallpaper</mat-icon>&nbsp;Hintergrundbild
+      </h3>
+      <div class="image-selection-container">
+        <div class="selected-image-preview" *ngIf="selectedBackgroundImage">
+          <img 
+            id="background-image-preview"
+            [src]="resolveImageUrl(selectedBackgroundImage, 'background')" 
+            [alt]="'Hintergrundbild'" 
+            (error)="onImageError($event)"
+            (load)="onImageLoad($event)" />
+          <div class="image-overlay">
+            <button mat-icon-button color="warn" (click)="selectedBackgroundImage = undefined">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </div>
+        <button mat-raised-button color="accent" (click)="openImageSelection('background')" class="select-image-btn">
+          <mat-icon>wallpaper</mat-icon>
+          {{ selectedBackgroundImage ? 'Anderen Hintergrund wählen' : 'Hintergrund auswählen' }}
+        </button>
+          </div>
+        <form [formGroup]="productForm" class="product-form">
+          <div class="form-fields">
       <!-- Titel -->
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Produkttitel</mat-label>
@@ -174,58 +226,47 @@
         </mat-checkbox>
       </div>
 
-      <mat-divider></mat-divider>
 
-      <!-- Produktbild Auswahl -->
-      <h3 class="section-title">
-        <mat-icon>image</mat-icon>&nbsp;Produktbild
-      </h3>
-      <div class="image-selection-container">
-        <div class="selected-image-preview" *ngIf="selectedProductImage">
-          <img 
-            id="product-image-preview"
-            [src]="resolveImageUrl(selectedProductImage, 'product')" 
-            [alt]="'Produktbild'" 
-            (error)="onImageError($event)"
-            (load)="onImageLoad($event)" />
-          <div class="image-overlay">
-            <button mat-icon-button color="warn" (click)="selectedProductImage = undefined">
-              <mat-icon>close</mat-icon>
-            </button>
           </div>
-        </div>
-        <button mat-raised-button color="primary" (click)="openImageSelection('product')" class="select-image-btn">
-          <mat-icon>photo_library</mat-icon>
-          {{ selectedProductImage ? 'Anderes Bild wählen' : 'Bild auswählen' }}
-        </button>
+        </form>
       </div>
 
-      <mat-divider></mat-divider>
-
-      <!-- Hintergrundbild Auswahl -->
-      <h3 class="section-title">
-        <mat-icon>wallpaper</mat-icon>&nbsp;Hintergrundbild
-      </h3>
-      <div class="image-selection-container">
-        <div class="selected-image-preview" *ngIf="selectedBackgroundImage">
-          <img 
-            id="background-image-preview"
-            [src]="resolveImageUrl(selectedBackgroundImage, 'background')" 
-            [alt]="'Hintergrundbild'" 
-            (error)="onImageError($event)"
-            (load)="onImageLoad($event)" />
-          <div class="image-overlay">
-            <button mat-icon-button color="warn" (click)="selectedBackgroundImage = undefined">
-              <mat-icon>close</mat-icon>
-            </button>
+      <!-- Right Side: Sticky Preview -->
+      <div class="preview-section">
+        <div class="preview-header">
+          <h3 class="section-title">
+            <mat-icon>preview</mat-icon>&nbsp;Live Vorschau
+          </h3>
+          <div class="preview-controls">
+            <mat-button-toggle-group [(value)]="previewMode" class="preview-toggle">
+              <mat-button-toggle value="normal">
+                <mat-icon>shopping_bag</mat-icon>
+                Normal
+              </mat-button-toggle>
+              <mat-button-toggle value="featured" [disabled]="!productForm.get('is_featured')?.value">
+                <mat-icon>star</mat-icon>
+                Featured
+              </mat-button-toggle>
+            </mat-button-toggle-group>
           </div>
         </div>
-        <button mat-raised-button color="accent" (click)="openImageSelection('background')" class="select-image-btn">
-          <mat-icon>wallpaper</mat-icon>
-          {{ selectedBackgroundImage ? 'Anderen Hintergrund wählen' : 'Hintergrund auswählen' }}
-        </button>
+        <div class="preview-container">
+          <!-- Normal Product Card Preview -->
+          <app-product-card 
+            *ngIf="previewMode === 'normal'" 
+            [product]="getPreviewProduct()"
+            class="preview-card">
+          </app-product-card>
+
+          <!-- Featured Category Card Preview -->
+          <app-category-card 
+            *ngIf="previewMode === 'featured'" 
+            [item]="getPreviewCategoryItem()"
+            class="preview-card">
+          </app-category-card>
+        </div>
       </div>
-    </form>
+    </div>
   </mat-dialog-content>
 
   <mat-dialog-actions align="end">

@@ -10,10 +10,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { Item } from '../../models/item.model';
 import { SupabaseService } from '../../services/supabase.service';
 import { getRestaurantSlug, slugify, getFileUrl } from '../../utils/helpers';
 import { ImageSelectionDialogComponent } from './image-selection-dialog.component';
+import { ProductCardComponent } from '../../pages/products/components/product-card.component';
+import { CategoryCardComponent } from '../../pages/categories/components/category-card.component';
 
 export interface ProductEditData {
   item: Item;
@@ -33,7 +36,10 @@ export interface ProductEditData {
     MatIconModule,
     MatCheckboxModule,
     MatDividerModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatButtonToggleModule,
+    ProductCardComponent,
+    CategoryCardComponent
   ],
   templateUrl: './product-edit-dialog.component.html',
   styleUrls: ['./product-edit-dialog.component.css']
@@ -44,6 +50,7 @@ export class ProductEditDialogComponent implements OnInit {
   loadingImages = signal(false);
   selectedProductImage?: string;
   selectedBackgroundImage?: string;
+  previewMode: 'normal' | 'featured' = 'normal';
 
   private categoryOptionsSignal = signal<{ label: string; value: string }[]>([]);
   public readonly categoryOptions = computed(() => this.categoryOptionsSignal());
@@ -151,7 +158,7 @@ export class ProductEditDialogComponent implements OnInit {
 
   openImageSelection(type: 'product' | 'background') {
     const dialogRef = this.dialog.open(ImageSelectionDialogComponent, {
-      width: '900px',
+      width: '100%',
       maxWidth: '95vw',
       maxHeight: '90vh',
       data: {
@@ -238,6 +245,55 @@ export class ProductEditDialogComponent implements OnInit {
 
   onImageLoad(event: Event) {
     console.log('Image loaded successfully in preview');
+  }
+
+  // Preview Helper Methods - Create Item objects for Frontend Components
+  getPreviewProduct(): Item {
+    return {
+      id: 'preview',
+      title: this.form.get('title')?.value || 'Produkttitel',
+      subtitle: this.form.get('subtitle')?.value || '',
+      description: this.form.get('description')?.value || 'Produktbeschreibung...',
+      price: this.form.get('price')?.value || 0,
+      category_slug: this.form.get('category')?.value || '',
+      product_slug: 'preview',
+      product_image_url: this.selectedProductImage || '',
+      background_image_url: '',
+      image_scale: this.form.get('image_scale')?.value || 'md',
+      text_scale: this.form.get('text_scale')?.value || 'md',
+      is_active: this.form.get('is_active')?.value || true,
+      is_available: this.form.get('is_available')?.value || true,
+      is_featured: this.form.get('is_featured')?.value || false,
+      sort_order: this.form.get('sort_order')?.value || 0,
+      display_type: 'product',
+      restaurant_slug: getRestaurantSlug(),
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    } as Item;
+  }
+
+  getPreviewCategoryItem(): Item {
+    return {
+      id: 'preview',
+      title: this.form.get('title')?.value || 'Produkttitel',
+      subtitle: this.form.get('subtitle')?.value || '',
+      description: this.form.get('description')?.value || 'Produktbeschreibung...',
+      price: this.form.get('price')?.value || 0,
+      category_slug: this.form.get('category')?.value || '',
+      product_slug: 'preview',
+      product_image_url: this.selectedProductImage || '',
+      background_image_url: this.selectedBackgroundImage || '',
+      image_scale: this.form.get('image_scale')?.value || 'md',
+      text_scale: this.form.get('text_scale')?.value || 'md',
+      is_active: this.form.get('is_active')?.value || true,
+      is_available: this.form.get('is_available')?.value || true,
+      is_featured: this.form.get('is_featured')?.value || false,
+      sort_order: this.form.get('sort_order')?.value || 0,
+      display_type: 'category',
+      restaurant_slug: getRestaurantSlug(),
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    } as Item;
   }
 }
 

@@ -1,157 +1,216 @@
 /* Product Edit Dialog Styles */
 .product-edit-dialog {
-  min-width: 600px;
-  max-width: 90vw;
+  max-width: 95vw;
   max-height: 90vh;
 }
 
+.product-edit-dialog h2[mat-dialog-title] {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #1976d2;
+}
+
+.product-edit-dialog h2[mat-dialog-title] mat-icon {
+  font-size: 2rem;
+  width: 2rem;
+  height: 2rem;
+}
+
+/* Dialog Layout */
+.dialog-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  height: 70vh;
+  max-height: 70vh;
+  align-items: start;
+}
+
+/* Left Side: Scrollable Form */
+.form-section {
+  overflow-y: auto;
+  height: 100%;
+  width: 100%;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.form-section::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Form Styles - Compact for better layout */
 .product-form {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-  padding: 1rem;
+  gap: 1rem;
+  padding: 0.75rem 0rem;
+}
+
+.form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Compact Form Fields */
+.product-form .mat-mdc-form-field {
+  margin-bottom: 0.5rem;
+}
+
+.product-form .mat-mdc-form-field .mat-mdc-form-field-wrapper {
+  margin-bottom: 0;
+}
+
+.product-form .mat-mdc-form-field .mat-mdc-form-field-subscript-wrapper {
+  margin-top: 0.25rem;
+}
+
+/* Compact Scale Row */
+.scale-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.scale-row .mat-mdc-form-field {
+  margin-bottom: 0;
+}
+
+/* Compact Checkbox Section */
+.checkbox-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+}
+
+.checkbox-section .mat-mdc-checkbox {
+  margin-bottom: 0;
+}
+
+/* Right Side: Sticky Preview */
+.preview-section {
+  position: sticky;
+  top: 0;
+  background: #fafafa;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.preview-section::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.preview-header {
+  margin-bottom: 0.75rem;
+}
+
+.preview-header .section-title {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.preview-toggle {
+  width: 100%;
+}
+
+.preview-toggle .mat-mdc-button-toggle {
+  flex: 1;
+  font-size: 0.875rem;
 }
 
 .full-width {
   width: 100%;
 }
 
-.scale-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1rem;
+.product-form mat-form-field {
+  margin-bottom: 8px;
 }
 
-/* Image Selection Container */
-.image-selection-container {
-  margin-top: 0.75rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-/* Thumbnail-Container (Cropping-Rahmen) */
-.selected-image-preview {
-  position: relative;            /* Bezug für absolute Kinder */
-  width: 120px;
-  height: 90px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  overflow: hidden;              /* Cropping */
-  background: #f5f5f5;
-  flex-shrink: 0;
-}
-
-/* Bild absolut strecken + sauber croppen */
-.selected-image-preview > img {
-  position: absolute;
-  inset: 0;                      /* top/right/bottom/left: 0 */
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;  /* proportional füllen */
-  object-position: center !important;
-  display: block;
-  border: 0;
-  outline: 0;
-  z-index: 0;                    /* unter Overlay halten */
-  /* Optional gegen harte Resets: */
-  max-width: none !important;
-}
-
-/* Optional: IDs – nur wenn benötigt */
-#product-image-preview,
-#background-image-preview {
-  position: absolute;
-  inset: 0;
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-  object-position: center !important;
-  display: block;
-  border: 0;
-  outline: 0;
-  z-index: 0;
-  max-width: none !important;
-}
-
-/* Overlay – klickt nicht, solange unsichtbar */
-.image-overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 1;                                /* über dem Bild */
-  background: rgba(0, 0, 0, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;                                /* versteckt */
-  pointer-events: none;                      /* blockiert NICHT */
-  transition: opacity 0.2s ease;
-}
-
-/* Beim Hover sichtbar + interaktiv */
-.selected-image-preview:hover .image-overlay {
-  opacity: 1;
-  pointer-events: auto;                      /* jetzt klickbar */
-}
-
-/* Material-Button im Overlay – kompakt & sichtbar */
-.image-overlay button {
-  background: rgba(0, 0, 0, 0.4);
-  border-radius: 50%;
-  color: #fff;
-  transition: background 0.2s ease-in-out;
-}
-
-.image-overlay button:hover {
-  background: rgba(0, 0, 0, 0.6);
-}
-
-.select-image-btn {
-  align-self: flex-start;
-  min-width: 120px;
-}
-
-/* Section Title */
-.section-title {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin: 1rem 0 0.5rem 0;
-  font-weight: 500;
-  color: #424242;
+.product-form mat-form-field mat-icon[matSuffix] {
+  color: #666;
 }
 
 /* Checkbox Section */
 .checkbox-section {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  margin: 16px 0;
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #fafafa;
 }
 
 .checkbox-label {
   display: flex;
   align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.checkbox-label mat-icon {
+  font-size: 1.2rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  color: #4caf50;
+}
+
+/* Dialog Actions */
+mat-dialog-actions {
+  margin: 0;
+  gap: 1rem;
+  justify-content: flex-end;
+  border-top: 1px solid #e0e0e0;
+}
+
+mat-dialog-actions button {
+  display: flex;
+  align-items: center;
   gap: 0.5rem;
-}
-
-/* Form Field Customizations */
-.product-form .mat-mdc-form-field {
-  margin-bottom: 4px;
-}
-
-.product-form .mat-mdc-form-field .mat-mdc-text-field-wrapper {
-  background-color: transparent;
-}
-
-/* Button Styles */
-button[mat-raised-button] {
   min-width: 120px;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
 }
 
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+mat-dialog-actions button mat-icon {
+  font-size: 1.2rem;
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+mat-dialog-actions button[mat-button] {
+  color: #666;
+  border: 1px solid #e0e0e0;
+  background: #fafafa;
+}
+
+mat-dialog-actions button[mat-button]:hover {
+  background: #f0f0f0;
+}
+
+/* Dialog Content */
+mat-dialog-content {
+  max-height: 75vh;
+  overflow: hidden;
+  padding: 1rem !important;
+}
+
+/* Scale Row */
+.scale-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
 /* Responsive Design */
@@ -165,21 +224,225 @@ button:disabled {
     grid-template-columns: 1fr;
   }
 
-  .selected-image-preview {
-    width: 100px;
-    height: 75px;
-  }
+ 
 
   .select-image-btn {
     min-width: 100px;
   }
-
+  
   mat-dialog-actions {
     flex-direction: column-reverse;
   }
-
+  
   mat-dialog-actions button {
     width: 100%;
     justify-content: center;
+  }
+}
+
+/* Form Field Customizations */
+.product-form .mat-mdc-form-field {
+  margin-bottom: 4px;
+}
+
+/* Error States */
+.product-form .mat-mdc-form-field.mat-mdc-form-field-invalid {
+  --mdc-outlined-text-field-error-outline-color: #f44336;
+}
+
+/* Select Options */
+.product-form mat-option {
+  font-size: 14px;
+}
+
+/* Divider */
+mat-divider {
+  margin: 16px 0;
+}
+
+/* Submit Button Enhancements */
+button[mat-raised-button][color="primary"] {
+  background: linear-gradient(45deg, #1976d2, #42a5f5);
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
+  transition: all 0.3s ease;
+}
+
+button[mat-raised-button][color="primary"]:hover:not([disabled]) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.4);
+}
+
+button[mat-raised-button][color="primary"]:disabled {
+  background: #ccc;
+  box-shadow: none;
+}
+
+/* Loading State */
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Image Selection Container */
+.image-selection-container {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.selected-image-preview {
+  position: relative;
+  width: 120px;
+  height: 90px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f5f5f5;
+  flex-shrink: 0;
+  contain: layout style paint;
+  display: block;
+}
+
+/* Optimiertes Image-Styling nach Best Practices */
+.selected-image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  border: none;
+  outline: none;
+}
+
+
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.selected-image-preview:hover .image-overlay {
+  opacity: 1;
+}
+
+.select-image-btn {
+  align-self: flex-start;
+  min-width: 120px;
+}
+
+.no-images {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2rem;
+  color: #999;
+  text-align: center;
+}
+
+.no-images mat-icon {
+  font-size: 3rem;
+  width: 3rem;
+  height: 3rem;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  gap: 1rem;
+}
+
+/* Background Preview */
+.bg-preview-row {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.bg-preview-card {
+  width: 100%;
+  max-width: 400px;
+  height: 120px;
+  border-radius: 12px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  border: 2px solid #e0e0e0;
+}
+
+.bg-preview-label {
+  background: rgba(255,255,255,0.9);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Preview Section Styles - Using Frontend Components */
+.preview-section {
+  background: #fafafa;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+}
+
+.preview-controls {
+  margin-bottom: 1rem;
+}
+
+.preview-toggle {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.preview-toggle .mat-mdc-button-toggle {
+  flex: 1;
+  border: none;
+}
+
+.preview-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 250px;
+}
+
+.preview-card {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .product-edit-dialog {
+    min-width: 95vw;
+  }
+  
+  .dialog-layout {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .preview-section {
+    position: relative;
+    order: -1;
+  }
+  
+  .preview-card {
+    width: 240px;
   }
 }

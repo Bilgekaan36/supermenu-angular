@@ -248,7 +248,7 @@ export class AdminDashboardComponent implements OnInit {
 
   editItem(item: Item) {
     const dialogRef = this.dialog.open(ProductEditDialogComponent, {
-      width: '900px',
+      width: '100%',
       maxWidth: '95vw',
       maxHeight: '90vh',
       data: { item },
@@ -294,7 +294,7 @@ export class AdminDashboardComponent implements OnInit {
 
   createNewItem(type: 'product') {
     const dialogRef = this.dialog.open(ProductCreateDialogComponent, {
-      width: '900px',
+      width: '100%',
       maxWidth: '95vw',
       maxHeight: '90vh',
       data: { type },

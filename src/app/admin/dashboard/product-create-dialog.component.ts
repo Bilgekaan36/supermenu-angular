@@ -10,10 +10,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SupabaseService } from '../../services/supabase.service';
 import { getRestaurantSlug, slugify, getFileUrl } from '../../utils/helpers';
 import { ImageSelectionDialogComponent } from './image-selection-dialog.component';
+import { ProductCardComponent } from '../../pages/products/components/product-card.component';
+import { CategoryCardComponent } from '../../pages/categories/components/category-card.component';
+import { Item } from '../../models/item.model';
 
 export interface ProductCreateDialogData {
   restaurantSlug?: string;
@@ -33,7 +37,10 @@ export interface ProductCreateDialogData {
     MatIconModule,
     MatCheckboxModule,
     MatDividerModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatButtonToggleModule,
+    ProductCardComponent,
+    CategoryCardComponent
   ],
   templateUrl: './product-create-dialog.component.html',
   styleUrls: ['./product-create-dialog.component.css']
@@ -43,6 +50,7 @@ export class ProductCreateDialogComponent implements OnInit {
   isSubmitting = false;
   selectedProductImage?: string;
   selectedBackgroundImage?: string;
+  previewMode: 'normal' | 'featured' = 'normal';
 
   private categoryOptionsSignal = signal<{ label: string; value: string }[]>([]);
   public readonly categoryOptions = computed(() => this.categoryOptionsSignal());
@@ -140,7 +148,7 @@ export class ProductCreateDialogComponent implements OnInit {
 
   openImageSelection(type: 'product' | 'background') {
     const dialogRef = this.dialog.open(ImageSelectionDialogComponent, {
-      width: '900px',
+      width: '100%',
       maxWidth: '95vw',
       maxHeight: '90vh',
       data: {
@@ -243,5 +251,54 @@ export class ProductCreateDialogComponent implements OnInit {
 
   onImageLoad(event: Event) {
     console.log('Image loaded successfully in preview');
+  }
+
+  // Preview Helper Methods - Create Item objects for Frontend Components
+  getPreviewProduct(): Item {
+    return {
+      id: 'preview',
+      title: this.productForm.get('title')?.value || 'Produkttitel',
+      subtitle: this.productForm.get('subtitle')?.value || '',
+      description: this.productForm.get('description')?.value || 'Produktbeschreibung...',
+      price: this.productForm.get('price')?.value || 0,
+      category_slug: this.productForm.get('category')?.value || '',
+      product_slug: 'preview',
+      product_image_url: this.selectedProductImage || '',
+      background_image_url: '',
+      image_scale: this.productForm.get('image_scale')?.value || 'md',
+      text_scale: this.productForm.get('text_scale')?.value || 'md',
+      is_active: this.productForm.get('is_active')?.value || true,
+      is_available: this.productForm.get('is_available')?.value || true,
+      is_featured: this.productForm.get('is_featured')?.value || false,
+      sort_order: this.productForm.get('sort_order')?.value || 0,
+      display_type: 'product',
+      restaurant_slug: getRestaurantSlug(),
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    } as Item;
+  }
+
+  getPreviewCategoryItem(): Item {
+    return {
+      id: 'preview',
+      title: this.productForm.get('title')?.value || 'Produkttitel',
+      subtitle: this.productForm.get('subtitle')?.value || '',
+      description: this.productForm.get('description')?.value || 'Produktbeschreibung...',
+      price: this.productForm.get('price')?.value || 0,
+      category_slug: this.productForm.get('category')?.value || '',
+      product_slug: 'preview',
+      product_image_url: this.selectedProductImage || '',
+      background_image_url: this.selectedBackgroundImage || '',
+      image_scale: this.productForm.get('image_scale')?.value || 'md',
+      text_scale: this.productForm.get('text_scale')?.value || 'md',
+      is_active: this.productForm.get('is_active')?.value || true,
+      is_available: this.productForm.get('is_available')?.value || true,
+      is_featured: this.productForm.get('is_featured')?.value || false,
+      sort_order: this.productForm.get('sort_order')?.value || 0,
+      display_type: 'category',
+      restaurant_slug: getRestaurantSlug(),
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    } as Item;
   }
 }

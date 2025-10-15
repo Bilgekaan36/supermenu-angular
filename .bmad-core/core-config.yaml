@@ -1,0 +1,11 @@
+version: 1
+agent:
+  name: James
+  id: dev
+  title: Full Stack Developer
+project:
+  name: supermenu-angular
+  language: angular
+  packageManager: npm
+devLoadAlwaysFiles: []
+
