@@ -1,8 +1,9 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SupabaseService } from '../../services/supabase.service';
+import { getRestaurantSlug, slugify, getFileUrl, getStoragePathFromUrl } from '../../utils/helpers';
 import { AdminAuthService } from '../services/admin-auth.service';
 import { Item } from '../../models/item.model';
 
@@ -20,13 +21,18 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ProductCreateDialogComponent } from './product-create-dialog.component';
+import { ProductEditDialogComponent } from './product-edit-dialog.component';
+import { ImageSelectionDialogComponent } from './image-selection-dialog.component';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
   imports: [
-    CommonModule, 
+    CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
@@ -38,10 +44,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     MatSelectModule,
     MatChipsModule,
     MatProgressSpinnerModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatDialogModule,
   ],
   templateUrl: './admin-dashboard.component.html',
-  styleUrls: ['./admin-dashboard.component.css']
+  styleUrls: ['./admin-dashboard.component.css'],
 })
 export class AdminDashboardComponent implements OnInit {
   // Signals für State Management
@@ -60,7 +67,7 @@ export class AdminDashboardComponent implements OnInit {
   itemsPerPage = 10;
 
   // Table Configuration
-  displayedColumns = ['title', 'price', 'actions'];
+  displayedColumns = ['media', 'title', 'price', 'actions'];
 
   // Computed values
   public readonly allItems = computed(() => this.allItemsSignal());
@@ -68,9 +75,9 @@ export class AdminDashboardComponent implements OnInit {
   public readonly error = computed(() => this.errorSignal());
 
   // Computed für Produkte
-  public readonly products = computed(() => 
-    this.allItems().filter(item => 
-      item.display_type === 'product' || item.display_type === 'both'
+  public readonly products = computed(() =>
+    this.allItems().filter(
+      (item) => item.display_type === 'product' || item.display_type === 'both'
     )
   );
 
@@ -88,7 +95,8 @@ export class AdminDashboardComponent implements OnInit {
     private supabaseService: SupabaseService,
     private auth: AdminAuthService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog
   ) {}
 
   async ngOnInit() {
@@ -99,7 +107,7 @@ export class AdminDashboardComponent implements OnInit {
   async loadData() {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
-    
+
     try {
       const items = await this.supabaseService.fetchAllItems('eiscafe-remi');
       this.allItemsSignal.set(items);
@@ -121,17 +129,18 @@ export class AdminDashboardComponent implements OnInit {
     // Search filter
     if (this.searchTerm) {
       const searchLower = this.searchTerm.toLowerCase();
-      filtered = filtered.filter(product =>
-        product.title.toLowerCase().includes(searchLower) ||
-        (product.subtitle && product.subtitle.toLowerCase().includes(searchLower)) ||
-        (product.description && product.description.toLowerCase().includes(searchLower)) ||
-        (product.category_path && product.category_path.toLowerCase().includes(searchLower))
+      filtered = filtered.filter(
+        (product) =>
+          product.title.toLowerCase().includes(searchLower) ||
+          (product.subtitle && product.subtitle.toLowerCase().includes(searchLower)) ||
+          (product.description && product.description.toLowerCase().includes(searchLower)) ||
+          (product.category_slug && product.category_slug.toLowerCase().includes(searchLower))
       );
     }
 
     // Status filter
     if (this.statusFilter !== 'all') {
-      filtered = filtered.filter(product => {
+      filtered = filtered.filter((product) => {
         if (this.statusFilter === 'active') return product.is_active;
         if (this.statusFilter === 'inactive') return !product.is_active;
         return true;
@@ -140,7 +149,7 @@ export class AdminDashboardComponent implements OnInit {
 
     // Category filter
     if (this.categoryFilter !== 'all') {
-      filtered = filtered.filter(product => product.category_path === this.categoryFilter);
+      filtered = filtered.filter((product) => product.category_slug === this.categoryFilter);
     }
 
     this.filteredProductsSignal.set(filtered);
@@ -150,7 +159,7 @@ export class AdminDashboardComponent implements OnInit {
 
   applySorting() {
     const filtered = [...this.filteredProducts()];
-    
+
     filtered.sort((a, b) => {
       let aValue: any = a[this.sortField as keyof Item];
       let bValue: any = b[this.sortField as keyof Item];
@@ -178,16 +187,16 @@ export class AdminDashboardComponent implements OnInit {
 
   // Statistics Methods
   getActiveProductsCount(): number {
-    return this.products().filter(p => p.is_active).length;
+    return this.products().filter((p) => p.is_active).length;
   }
 
   getInactiveProductsCount(): number {
-    return this.products().filter(p => !p.is_active).length;
+    return this.products().filter((p) => !p.is_active).length;
   }
 
   getUniqueCategories(): string[] {
     const categories = this.products()
-      .map(p => p.category_path)
+      .map((p) => p.category_slug)
       .filter((category): category is string => !!category);
     return [...new Set(categories)].sort();
   }
@@ -208,8 +217,8 @@ export class AdminDashboardComponent implements OnInit {
       await this.supabaseService.toggleItemStatus(item.id, !item.is_active);
       await this.loadData();
       this.snackBar.open(
-        `Produkt "${item.title}" wurde ${item.is_active ? 'deaktiviert' : 'aktiviert'}`, 
-        'Schließen', 
+        `Produkt "${item.title}" wurde ${item.is_active ? 'deaktiviert' : 'aktiviert'}`,
+        'Schließen',
         { duration: 3000 }
       );
     } catch (error) {
@@ -238,15 +247,104 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   editItem(item: Item) {
-    // TODO: Navigate to edit form
-    console.log('Edit item:', item);
-    this.snackBar.open(`Bearbeitung für "${item.title}" wird implementiert`, 'Schließen', { duration: 3000 });
+    const dialogRef = this.dialog.open(ProductEditDialogComponent, {
+      width: '900px',
+      maxWidth: '95vw',
+      maxHeight: '90vh',
+      data: { item },
+    });
+
+    dialogRef.afterClosed().subscribe(async (updates) => {
+      if (!updates) return;
+      try {
+        this.loadingSignal.set(true);
+        await this.supabaseService.updateItem(item.id, updates);
+
+        // Cleanup old images if paths changed
+        const deletions: string[] = [];
+        const oldProductPath = item.product_image_url;
+        const newProductPath = (updates as any).product_image_url;
+        if (oldProductPath && oldProductPath !== newProductPath) {
+          const parsed = oldProductPath.startsWith('/')
+            ? { bucket: oldProductPath.split('/')[1], path: oldProductPath.substring(oldProductPath.indexOf('/', 1)) }
+            : getStoragePathFromUrl(oldProductPath);
+          if (parsed) deletions.push(`/${parsed.bucket}${parsed.path}`);
+        }
+        const oldBgPath = item.background_image_url;
+        const newBgPath = (updates as any).background_image_url;
+        if (oldBgPath && oldBgPath !== newBgPath) {
+          const parsed = oldBgPath.startsWith('/')
+            ? { bucket: oldBgPath.split('/')[1], path: oldBgPath.substring(oldBgPath.indexOf('/', 1)) }
+            : getStoragePathFromUrl(oldBgPath);
+        	if (parsed) deletions.push(`/${parsed.bucket}${parsed.path}`);
+        }
+        if (deletions.length) {
+          await Promise.all(deletions.map((full) => this.supabaseService.deleteFileByPath(full)));
+        }
+        await this.loadData();
+        this.snackBar.open(`Produkt "${item.title}" wurde aktualisiert`, 'Schließen', { duration: 3000 });
+      } catch (error) {
+        console.error('Error updating product:', error);
+        this.snackBar.open('Fehler beim Aktualisieren des Produkts', 'Schließen', { duration: 5000 });
+      } finally {
+        this.loadingSignal.set(false);
+      }
+    });
   }
 
   createNewItem(type: 'product') {
-    // TODO: Navigate to create form
-    console.log('Create new product:', type);
-    this.snackBar.open('Produkterstellung wird implementiert', 'Schließen', { duration: 3000 });
+    const dialogRef = this.dialog.open(ProductCreateDialogComponent, {
+      width: '900px',
+      maxWidth: '95vw',
+      maxHeight: '90vh',
+      data: { type },
+    });
+
+    dialogRef.afterClosed().subscribe(async (result) => {
+      if (result) {
+        try {
+          this.loadingSignal.set(true);
+          const nowIso = new Date().toISOString();
+          const insertPayload = {
+            restaurant_slug: getRestaurantSlug(),
+            product_slug: slugify(result.title),
+            title: result.title,
+            subtitle: (result as any).subtitle ?? null,
+            description: result.description,
+            parent_id: null,
+            category_slug: result.category,
+            price: Number(result.price),
+            product_image_url: (result as any).product_image_url ?? null,
+            background_image_url: (result as any).background_image_url ?? null,
+            image_scale: (result as any).image_scale ?? 'md',
+            text_scale: (result as any).text_scale ?? 'md',
+            is_active: !!(result as any).is_active,
+            is_available: !!(result as any).is_available,
+            is_featured: !!(result as any).is_featured,
+            sort_order: Number((result as any).sort_order ?? 9999),
+            metadata: {},
+            display_type: result.display_type,
+            category_settings: {
+              showSubProducts: false,
+            },
+            created_at: nowIso,
+            updated_at: nowIso,
+          } as any;
+
+          await this.supabaseService.createItem(insertPayload);
+          await this.loadData();
+          this.snackBar.open(`Produkt "${result.title}" wurde erfolgreich erstellt`, 'Schließen', {
+            duration: 3000,
+          });
+        } catch (error) {
+          console.error('Error creating product:', error);
+          this.errorSignal.set('Fehler beim Erstellen des Produkts');
+          this.snackBar.open('Fehler beim Erstellen des Produkts', 'Schließen', { duration: 5000 });
+        } finally {
+          this.loadingSignal.set(false);
+        }
+      }
+    });
   }
 
   async logout() {
@@ -261,6 +359,27 @@ export class AdminDashboardComponent implements OnInit {
 
   clearError() {
     this.errorSignal.set(null);
+  }
+
+  // Resolve storage paths to public URLs
+  resolveImageUrl(path?: string | null): string {
+    if (!path) return '';
+    const p = String(path);
+    if (/^https?:\/\//i.test(p)) return p;
+    // Legacy local paths mapped to storage buckets
+    const stripLeading = (s: string) => (s.startsWith('/') ? s.slice(1) : s);
+    const local = stripLeading(p);
+    if (local.startsWith('product-images/')) {
+      const remainder = local.replace(/^product-images\//, '');
+      return getFileUrl('product-images', `/${remainder}`);
+    }
+    if (local.startsWith('background-images/')) {
+      const remainder = local.replace(/^background-images\//, '');
+      return getFileUrl('background-images', `/${remainder}`);
+    }
+    // Default to public bucket
+    const normalized = p.startsWith('/') ? p : `/${p}`;
+    return getFileUrl('public', normalized);
   }
 }
 

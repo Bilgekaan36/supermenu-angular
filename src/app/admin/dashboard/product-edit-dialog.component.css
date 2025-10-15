@@ -1,0 +1,185 @@
+/* Product Edit Dialog Styles */
+.product-edit-dialog {
+  min-width: 600px;
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+.product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1rem;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.scale-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Image Selection Container */
+.image-selection-container {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Thumbnail-Container (Cropping-Rahmen) */
+.selected-image-preview {
+  position: relative;            /* Bezug für absolute Kinder */
+  width: 120px;
+  height: 90px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;              /* Cropping */
+  background: #f5f5f5;
+  flex-shrink: 0;
+}
+
+/* Bild absolut strecken + sauber croppen */
+.selected-image-preview > img {
+  position: absolute;
+  inset: 0;                      /* top/right/bottom/left: 0 */
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;  /* proportional füllen */
+  object-position: center !important;
+  display: block;
+  border: 0;
+  outline: 0;
+  z-index: 0;                    /* unter Overlay halten */
+  /* Optional gegen harte Resets: */
+  max-width: none !important;
+}
+
+/* Optional: IDs – nur wenn benötigt */
+#product-image-preview,
+#background-image-preview {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  display: block;
+  border: 0;
+  outline: 0;
+  z-index: 0;
+  max-width: none !important;
+}
+
+/* Overlay – klickt nicht, solange unsichtbar */
+.image-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;                                /* über dem Bild */
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;                                /* versteckt */
+  pointer-events: none;                      /* blockiert NICHT */
+  transition: opacity 0.2s ease;
+}
+
+/* Beim Hover sichtbar + interaktiv */
+.selected-image-preview:hover .image-overlay {
+  opacity: 1;
+  pointer-events: auto;                      /* jetzt klickbar */
+}
+
+/* Material-Button im Overlay – kompakt & sichtbar */
+.image-overlay button {
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 50%;
+  color: #fff;
+  transition: background 0.2s ease-in-out;
+}
+
+.image-overlay button:hover {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.select-image-btn {
+  align-self: flex-start;
+  min-width: 120px;
+}
+
+/* Section Title */
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1rem 0 0.5rem 0;
+  font-weight: 500;
+  color: #424242;
+}
+
+/* Checkbox Section */
+.checkbox-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Form Field Customizations */
+.product-form .mat-mdc-form-field {
+  margin-bottom: 4px;
+}
+
+.product-form .mat-mdc-form-field .mat-mdc-text-field-wrapper {
+  background-color: transparent;
+}
+
+/* Button Styles */
+button[mat-raised-button] {
+  min-width: 120px;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .product-form {
+    padding: 0.5rem;
+    gap: 1rem;
+  }
+
+  .scale-row {
+    grid-template-columns: 1fr;
+  }
+
+  .selected-image-preview {
+    width: 100px;
+    height: 75px;
+  }
+
+  .select-image-btn {
+    min-width: 100px;
+  }
+
+  mat-dialog-actions {
+    flex-direction: column-reverse;
+  }
+
+  mat-dialog-actions button {
+    width: 100%;
+    justify-content: center;
+  }
+}

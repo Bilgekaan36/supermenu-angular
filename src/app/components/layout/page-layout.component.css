@@ -19,3 +19,7 @@
 .max-w-2xl {
   max-width: 42rem;
 }
+
+.max-w-admin {
+  max-width: 80rem;
+}

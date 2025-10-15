@@ -7,8 +7,8 @@
   <div class="category-card-container">
     <!-- Title Section - Upper Part -->
     <div class="category-title-section">
-      <h2 [class]="getTextSizeClass() + ' font-display text-white tracking-tighter transform -skew-y-1 text-center drop-shadow-sm scale-y-125'">
-        @for (word of item.category_settings?.categoryTitle?.split(' '); track word) {
+      <h2 [class]="getTextSizeClass() + ' font-display tracking-tighter transform -skew-y-1 text-center drop-shadow-sm scale-y-125'" [style.color]="categoryTextColor()">
+        @for (word of categoryTitle().split(' '); track word) {
           <span class="block">{{ word }}</span>
         }
       </h2>
@@ -26,8 +26,8 @@
 
     <!-- Subtitle Section - Bottom Bar -->
     <div class="category-subtitle-section">
-      <p class="text-sm sm:text-base md:text-lg font-black text-center tracking-tighter uppercase text-white">
-        {{ item.category_settings?.categorySubtitle }}
+      <p class="text-sm sm:text-base md:text-lg font-black text-center tracking-tighter uppercase" [style.color]="categoryTextColor()">
+        {{ categorySubtitle() }}
       </p>
     </div>
   </div>

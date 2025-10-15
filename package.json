@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "bmad:print": "node -p \"require('fs').readFileSync('.bmad-core/core-config.yaml','utf8')\""
   },
   "prettier": {
     "printWidth": 100,

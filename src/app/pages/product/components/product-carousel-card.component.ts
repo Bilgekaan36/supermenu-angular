@@ -18,7 +18,7 @@ export class ProductCarouselCardComponent {
   constructor(private router: Router) {}
 
   navigateToProduct(): void {
-    this.router.navigate([`/eiscafe-remi/${this.product.category_path}/${this.product.product_slug}`]);
+    this.router.navigate([`/eiscafe-remi/${this.product.category_slug}/${this.product.product_slug}`]);
   }
 
   getFormattedPrice(): string {

@@ -224,3 +224,81 @@ body {
   .text-normal-xl { font-size: 4.5rem; line-height: 4.75rem; }
   .text-normal-xxl { font-size: 6rem; line-height: 6.25rem; }
 }
+
+/* ===== DIALOG IMAGE PREVIEW STYLES (Global für View-Encapsulation) ===== */
+/* Thumbnail-Container (Cropping-Rahmen) - Kompakte Größe für Product/Background Previews */
+.cdk-overlay-container .mat-mdc-dialog-container .selected-image-preview {
+  position: relative;            /* Bezug für absolute Kinder */
+  width: 150px;
+  height: 150px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;              /* Cropping */
+  background: #f5f5f5;
+  flex-shrink: 0;
+  margin: 0 0 1rem 0;
+}
+
+/* Responsive sizing for mobile */
+@media (max-width: 768px) {
+  .cdk-overlay-container .mat-mdc-dialog-container .selected-image-preview {
+    width: 120px;
+    height: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cdk-overlay-container .mat-mdc-dialog-container .selected-image-preview {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+/* Bild absolut strecken + sauber croppen */
+.cdk-overlay-container .mat-mdc-dialog-container .selected-image-preview > img,
+.cdk-overlay-container .mat-mdc-dialog-container #product-image-preview,
+.cdk-overlay-container .mat-mdc-dialog-container #background-image-preview {
+  position: absolute;
+  inset: 0;                      /* top/right/bottom/left: 0 */
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;  /* proportional füllen */
+  object-position: center !important;
+  display: block;
+  border: 0;
+  outline: 0;
+  z-index: 0;                    /* unter Overlay halten */
+  max-width: none !important;
+}
+
+/* Overlay – klickt nicht, solange unsichtbar */
+.cdk-overlay-container .mat-mdc-dialog-container .image-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;                                /* über dem Bild */
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;                                /* versteckt */
+  pointer-events: none;                      /* blockiert NICHT */
+  transition: opacity 0.2s ease;
+}
+
+/* Beim Hover sichtbar + interaktiv */
+.cdk-overlay-container .mat-mdc-dialog-container .selected-image-preview:hover .image-overlay {
+  opacity: 1;
+  pointer-events: auto;                      /* jetzt klickbar */
+}
+
+/* Material-Button im Overlay – kompakt & sichtbar */
+.cdk-overlay-container .mat-mdc-dialog-container .image-overlay button {
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 50%;
+  color: #fff;
+  transition: background 0.2s ease-in-out;
+}
+
+.cdk-overlay-container .mat-mdc-dialog-container .image-overlay button:hover {
+  background: rgba(0, 0, 0, 0.6);
+}

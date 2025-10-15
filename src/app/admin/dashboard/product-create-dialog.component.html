@@ -1,0 +1,246 @@
+<div class="product-create-dialog">
+  <h2 mat-dialog-title>
+    <mat-icon>add_circle</mat-icon>
+    Neues Produkt erstellen
+  </h2>
+  
+  <mat-dialog-content>
+    <form [formGroup]="productForm" class="product-form">
+      <!-- Titel -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Produkttitel</mat-label>
+        <input matInput 
+               formControlName="title" 
+               placeholder="z.B. Margherita Pizza"
+               required>
+        <mat-icon matSuffix>title</mat-icon>
+        <mat-error *ngIf="productForm.get('title')?.hasError('required')">
+          Titel ist erforderlich
+        </mat-error>
+        <mat-error *ngIf="productForm.get('title')?.hasError('minlength')">
+          Titel muss mindestens 3 Zeichen lang sein
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Untertitel -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Untertitel (optional)</mat-label>
+        <input matInput formControlName="subtitle" placeholder="z.B. Premium Selection">
+        <mat-icon matSuffix>subtitles</mat-icon>
+      </mat-form-field>
+
+      <!-- Beschreibung -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Beschreibung</mat-label>
+        <textarea matInput 
+                  formControlName="description"
+                  placeholder="Produktbeschreibung..."
+                  rows="3"
+                  required></textarea>
+        <mat-icon matSuffix>description</mat-icon>
+        <mat-error *ngIf="productForm.get('description')?.hasError('required')">
+          Beschreibung ist erforderlich
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Preis -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Preis</mat-label>
+        <input matInput 
+               type="number"
+               formControlName="price"
+               placeholder="0.00"
+               min="0"
+               step="0.01"
+               required>
+        <span matTextPrefix>€&nbsp;</span>
+        <mat-icon matSuffix>euro</mat-icon>
+        <mat-error *ngIf="productForm.get('price')?.hasError('required')">
+          Preis ist erforderlich
+        </mat-error>
+        <mat-error *ngIf="productForm.get('price')?.hasError('min')">
+          Preis muss größer als 0 sein
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Kategorie Modus -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Kategorie-Modus</mat-label>
+        <mat-select formControlName="categoryMode" required>
+          <mat-option value="existing">Vorhandene Kategorie wählen</mat-option>
+          <mat-option value="new">Neue Kategorie anlegen</mat-option>
+        </mat-select>
+        <mat-icon matSuffix>tune</mat-icon>
+      </mat-form-field>
+
+      <!-- Vorhandene Kategorie Auswahl -->
+      <mat-form-field *ngIf="productForm.get('categoryMode')?.value === 'existing'" appearance="outline" class="full-width">
+        <mat-label>Kategorie</mat-label>
+        <mat-select formControlName="category">
+          <mat-option *ngFor="let opt of categoryOptions()" [value]="opt.value">
+            {{ opt.label }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix>category</mat-icon>
+        <mat-error *ngIf="productForm.get('category')?.hasError('required')">
+          Kategorie ist erforderlich
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Neue Kategorie Titel -->
+      <mat-form-field *ngIf="productForm.get('categoryMode')?.value === 'new'" appearance="outline" class="full-width">
+        <mat-label>Neue Kategorie</mat-label>
+        <input matInput formControlName="new_category_title" placeholder="z.B. Burger" />
+        <mat-icon matSuffix>add</mat-icon>
+        <mat-hint>Wird automatisch in einen Kategorie-Pfad umgewandelt</mat-hint>
+        <mat-error *ngIf="productForm.get('new_category_title')?.hasError('required')">
+          Kategoriename ist erforderlich
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Kategorie Titelfarbe (nur bei neuer Kategorie) -->
+      <mat-form-field *ngIf="productForm.get('categoryMode')?.value === 'new'" appearance="outline" class="full-width">
+        <mat-label>Titelfarbe</mat-label>
+        <input matInput type="color" formControlName="category_text_color" />
+        <mat-icon matSuffix>palette</mat-icon>
+        <mat-hint>Farbe für Kategorietitel und Untertitel</mat-hint>
+      </mat-form-field>
+
+      <mat-divider></mat-divider>
+
+      <!-- Anzeigetyp -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Anzeigetyp</mat-label>
+        <mat-select formControlName="display_type" required>
+          <mat-option value="product">🛍️ Nur als Produkt</mat-option>
+          <mat-option value="both">🔄 Produkt & Kategorie</mat-option>
+        </mat-select>
+        <mat-icon matSuffix>visibility</mat-icon>
+        <mat-hint>Bestimmt wo das Produkt angezeigt wird</mat-hint>
+      </mat-form-field>
+
+      <!-- Darstellungsoptionen -->
+      <div class="scale-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Bildgröße</mat-label>
+          <mat-select formControlName="image_scale" required>
+            <mat-option value="xs">XS</mat-option>
+            <mat-option value="sm">SM</mat-option>
+            <mat-option value="md">MD</mat-option>
+            <mat-option value="lg">LG</mat-option>
+            <mat-option value="xl">XL</mat-option>
+          </mat-select>
+          <mat-icon matSuffix>photo_size_select_large</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Textgröße</mat-label>
+          <mat-select formControlName="text_scale" required>
+            <mat-option value="xs">XS</mat-option>
+            <mat-option value="sm">SM</mat-option>
+            <mat-option value="md">MD</mat-option>
+            <mat-option value="lg">LG</mat-option>
+            <mat-option value="xl">XL</mat-option>
+          </mat-select>
+          <mat-icon matSuffix>format_size</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Sortierung</mat-label>
+          <input matInput type="number" formControlName="sort_order" min="0" required>
+          <mat-icon matSuffix>sort</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <!-- Status Optionen -->
+      <div class="checkbox-section">
+        <mat-checkbox formControlName="is_active" color="primary">
+          <span class="checkbox-label">
+            <mat-icon>visibility</mat-icon>
+            Produkt ist aktiv
+          </span>
+        </mat-checkbox>
+        <mat-checkbox formControlName="is_available" color="primary">
+          <span class="checkbox-label">
+            <mat-icon>check_circle</mat-icon>
+            Verfügbar
+          </span>
+        </mat-checkbox>
+        <mat-checkbox formControlName="is_featured" color="accent">
+          <span class="checkbox-label">
+            <mat-icon>star</mat-icon>
+            Featured
+          </span>
+        </mat-checkbox>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <!-- Produktbild Auswahl -->
+      <h3 class="section-title">
+        <mat-icon>image</mat-icon>&nbsp;Produktbild
+      </h3>
+      <div class="image-selection-container">
+        <div class="selected-image-preview" *ngIf="selectedProductImage">
+          <img 
+            id="product-image-preview"
+            [src]="resolveImageUrl(selectedProductImage, 'product')" 
+            [alt]="'Produktbild'" 
+            (error)="onImageError($event)"
+            (load)="onImageLoad($event)" />
+          <div class="image-overlay">
+            <button mat-icon-button color="warn" (click)="selectedProductImage = undefined">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </div>
+        <button mat-raised-button color="primary" (click)="openImageSelection('product')" class="select-image-btn">
+          <mat-icon>photo_library</mat-icon>
+          {{ selectedProductImage ? 'Anderes Bild wählen' : 'Bild auswählen' }}
+        </button>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <!-- Hintergrundbild Auswahl -->
+      <h3 class="section-title">
+        <mat-icon>wallpaper</mat-icon>&nbsp;Hintergrundbild
+      </h3>
+      <div class="image-selection-container">
+        <div class="selected-image-preview" *ngIf="selectedBackgroundImage">
+          <img 
+            id="background-image-preview"
+            [src]="resolveImageUrl(selectedBackgroundImage, 'background')" 
+            [alt]="'Hintergrundbild'" 
+            (error)="onImageError($event)"
+            (load)="onImageLoad($event)" />
+          <div class="image-overlay">
+            <button mat-icon-button color="warn" (click)="selectedBackgroundImage = undefined">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </div>
+        <button mat-raised-button color="accent" (click)="openImageSelection('background')" class="select-image-btn">
+          <mat-icon>wallpaper</mat-icon>
+          {{ selectedBackgroundImage ? 'Anderen Hintergrund wählen' : 'Hintergrund auswählen' }}
+        </button>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()" [disabled]="isSubmitting">
+      <mat-icon>cancel</mat-icon>
+      Abbrechen
+    </button>
+    <button 
+      mat-raised-button 
+      color="primary" 
+      (click)="onSubmit()" 
+      [disabled]="!productForm.valid || isSubmitting">
+      <mat-spinner diameter="20" *ngIf="isSubmitting"></mat-spinner>
+      <mat-icon *ngIf="!isSubmitting">save</mat-icon>
+      {{ isSubmitting ? 'Erstelle...' : 'Erstellen' }}
+    </button>
+  </mat-dialog-actions>
+</div>
