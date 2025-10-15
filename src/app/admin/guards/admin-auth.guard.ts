@@ -6,10 +6,14 @@ import { AdminAuthService } from '../services/admin-auth.service';
 export class AdminAuthGuard implements CanActivate {
   constructor(private auth: AdminAuthService, private router: Router) {}
 
-  canActivate(): boolean {
+  canActivate(): boolean | Promise<boolean> {
     if (this.auth.isLoggedIn()) return true;
-    this.router.navigate(['/admin/login']);
-    return false;
+    // attempt to restore session before redirecting
+    return this.auth.getSession().then((session) => {
+      if (session) return true;
+      this.router.navigate(['/admin/login']);
+      return false;
+    });
   }
 }
 

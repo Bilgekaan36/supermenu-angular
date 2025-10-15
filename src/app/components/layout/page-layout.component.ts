@@ -12,7 +12,7 @@ import { HeaderComponent } from './header.component';
   styleUrls: ['./page-layout.component.css']
 })
 export class PageLayoutComponent {
-  constructor(private router: Router) {}
+  constructor(public router: Router) {}
 
   get shouldShowHeader(): boolean {
     return this.router.url !== '/eiscafe-remi';
