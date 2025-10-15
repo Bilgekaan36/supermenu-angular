@@ -16,7 +16,7 @@ export interface Item {
 
   // Hierarchie & Kategorisierung
   parent_id?: string; // UUID reference to parent item
-  category_path?: string;
+  category_slug?: string;
 
   // Preisgestaltung
   price?: number;
@@ -53,11 +53,7 @@ export interface ItemVariant {
 }
 
 export interface CategoryDisplaySettings {
-  showAsCategory: boolean;
-  categoryTitle?: string;
-  categorySubtitle?: string;
   showSubProducts: boolean;
-  text_scale?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 }
 
 // Database Types (für bessere Type Safety)

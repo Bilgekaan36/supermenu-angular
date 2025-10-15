@@ -1,0 +1,82 @@
+<h2 mat-dialog-title>
+  <mat-icon>{{ data.type === 'product' ? 'photo_library' : 'wallpaper' }}</mat-icon>
+  {{ data.type === 'product' ? 'Produktbild' : 'Hintergrundbild' }} auswählen
+</h2>
+
+<mat-dialog-content class="image-selection-content">
+  <!-- Upload Section -->
+  <div class="upload-section">
+    <button mat-raised-button color="primary" (click)="onUpload()" [disabled]="uploading">
+      <mat-icon *ngIf="!uploading">cloud_upload</mat-icon>
+      <mat-spinner *ngIf="uploading" diameter="20"></mat-spinner>
+      {{ uploading ? 'Wird hochgeladen...' : 'Neues Bild hochladen' }}
+    </button>
+    <input 
+      #fileInput 
+      type="file" 
+      accept="image/*" 
+      style="display: none" 
+      (change)="handleFileUpload($event)">
+    <div *ngIf="uploading" class="upload-progress">
+      <p>Bild wird hochgeladen und zur Datenbank hinzugefügt...</p>
+    </div>
+  </div>
+
+  <!-- Image Grid -->
+  <div class="image-grid" *ngIf="!loading && images.length > 0">
+    <div 
+      *ngFor="let image of images" 
+      class="image-card"
+      [class.selected]="selectedImage === image.path"
+      (click)="selectImage(image)">
+      
+      <div class="image-preview">
+        <img 
+          [src]="image.url" 
+          [alt]="image.name" 
+          loading="lazy"
+          (error)="onImageError($event, image)"
+          (load)="onImageLoad($event, image)">
+        <div class="image-overlay">
+          <mat-icon class="check-icon" *ngIf="selectedImage === image.path">check_circle</mat-icon>
+        </div>
+      </div>
+      
+      <div class="image-info">
+        <span class="image-name">{{ image.name }}</span>
+        <button 
+          mat-icon-button 
+          color="warn" 
+          (click)="deleteImage(image, $event)"
+          class="delete-btn"
+          matTooltip="Bild löschen">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && images.length === 0">
+    <mat-icon class="empty-icon">image_not_supported</mat-icon>
+    <p>Keine Bilder gefunden</p>
+    <p class="empty-subtitle">Laden Sie das erste Bild hoch</p>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+    <p>Lade Bilder...</p>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Abbrechen</button>
+  <button 
+    mat-raised-button 
+    color="primary" 
+    (click)="onConfirm()" 
+    [disabled]="!selectedImage">
+    Auswählen
+  </button>
+</mat-dialog-actions>
