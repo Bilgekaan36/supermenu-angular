@@ -5,6 +5,7 @@ import { ProductsComponent } from './pages/products/products.component';
 import { ProductComponent } from './pages/product/product.component';
 import { AdminLoginComponent } from './admin/login/admin-login.component';
 import { AdminDashboardComponent } from './admin/dashboard/admin-dashboard.component';
+import { ImageManagementComponent } from './admin/dashboard/image-management.component';
 import { AdminAuthGuard } from './admin/guards/admin-auth.guard';
 
 export const routes: Routes = [
@@ -17,5 +18,6 @@ export const routes: Routes = [
   { path: 'admin/login', component: AdminLoginComponent },
   { path: 'admin', redirectTo: 'admin/dashboard', pathMatch: 'full' },
   { path: 'admin/dashboard', component: AdminDashboardComponent, canActivate: [AdminAuthGuard] },
+  { path: 'admin/images', component: ImageManagementComponent, canActivate: [AdminAuthGuard] },
   { path: '**', component: HomeComponent } // Fallback
 ];

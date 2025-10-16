@@ -1,8 +1,12 @@
 <div class="dashboard-container">
   <mat-toolbar color="primary">
     <mat-icon>restaurant</mat-icon>
-    <span>Produkt Dashboard</span>
+    <span>Admin Dashboard</span>
     <span class="spacer"></span>
+    <button mat-button (click)="navigateToImages()">
+      <mat-icon>image</mat-icon>
+      Bildverwaltung
+    </button>
     <button mat-raised-button color="warn" (click)="logout()">
       <mat-icon>logout</mat-icon>
       Abmelden

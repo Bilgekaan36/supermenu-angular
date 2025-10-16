@@ -683,11 +683,15 @@ export class SupabaseService {
     sortOrder?: number;
   }): Promise<void> {
     try {
+      // Generate display_name from title or storage path
+      const displayName = imageData.title || this.generateDisplayName(imageData.storagePath);
+      
       const { error } = await this.supabase
         .from('product_images')
         .insert({
           slug: imageData.slug,
           title: imageData.title,
+          display_name: displayName,
           storage_path: imageData.storagePath,
           restaurant_slug: imageData.restaurantSlug,
           sort_order: imageData.sortOrder || 9999,
@@ -697,6 +701,42 @@ export class SupabaseService {
       if (error) throw error;
     } catch (error) {
       console.error('Error creating product image:', error);
+      throw error;
+    }
+  }
+
+  async createBackgroundImage(imageData: {
+    slug: string;
+    title: string;
+    storagePath: string;
+    restaurantSlug: string;
+    sortOrder?: number;
+    colorPrimary?: string;
+    colorSecondary?: string;
+    style?: string;
+  }): Promise<void> {
+    try {
+      // Generate display_name from title or storage path
+      const displayName = imageData.title || this.generateDisplayName(imageData.storagePath);
+      
+      const { error } = await this.supabase
+        .from('background_images')
+        .insert({
+          slug: imageData.slug,
+          title: imageData.title,
+          display_name: displayName,
+          storage_path: imageData.storagePath,
+          restaurant_slug: imageData.restaurantSlug,
+          sort_order: imageData.sortOrder || 9999,
+          color_primary: imageData.colorPrimary,
+          color_secondary: imageData.colorSecondary,
+          style: imageData.style,
+          is_active: true
+        });
+
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error creating background image:', error);
       throw error;
     }
   }

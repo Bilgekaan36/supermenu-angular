@@ -153,12 +153,22 @@ export class ImageSelectionDialogComponent implements OnInit {
       // Upload to storage
       await this.supabase.uploadFile(bucket, filePath, file);
       
-      // If it's a product image, also add to database table
+      // Add to database table based on type
+      const fileNameWithoutExt = fileName.replace(/\.[^/.]+$/, '');
+      const title = fileNameWithoutExt.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      
       if (this.data.type === 'product') {
-        const fileNameWithoutExt = fileName.replace(/\.[^/.]+$/, '');
         await this.supabase.createProductImage({
           slug: fileNameWithoutExt,
-          title: fileNameWithoutExt.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+          title: title,
+          storagePath: filePath,
+          restaurantSlug: this.data.restaurantSlug || getRestaurantSlug(),
+          sortOrder: 9999
+        });
+      } else if (this.data.type === 'background') {
+        await this.supabase.createBackgroundImage({
+          slug: fileNameWithoutExt,
+          title: title,
           storagePath: filePath,
           restaurantSlug: this.data.restaurantSlug || getRestaurantSlug(),
           sortOrder: 9999
