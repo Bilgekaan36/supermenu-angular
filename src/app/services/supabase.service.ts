@@ -290,7 +290,6 @@ export class SupabaseService {
     image_scale: string;
     text_scale: string;
     is_active: boolean;
-    is_available: boolean;
     is_featured: boolean;
     sort_order: number;
     display_type: string;
