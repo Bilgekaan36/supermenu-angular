@@ -77,7 +77,7 @@ export class AdminDashboardComponent implements OnInit {
   // Computed für Produkte
   public readonly products = computed(() =>
     this.allItems().filter(
-      (item) => item.display_type === 'product' || item.display_type === 'both'
+      (item) => true // All items are now products (featured items are category showcase products)
     )
   );
 
@@ -109,9 +109,16 @@ export class AdminDashboardComponent implements OnInit {
     this.errorSignal.set(null);
 
     try {
+      console.log('Loading data from Supabase...');
       const items = await this.supabaseService.fetchAllItems('eiscafe-remi');
+      console.log('Fetched items:', items);
+      console.log('Items count:', items.length);
+      
       this.allItemsSignal.set(items);
       this.applyFilters();
+      
+      console.log('All items signal:', this.allItems());
+      console.log('Products computed:', this.products());
     } catch (error) {
       console.error('Error loading data:', error);
       const errorMessage = 'Fehler beim Laden der Daten';
@@ -319,11 +326,9 @@ export class AdminDashboardComponent implements OnInit {
             image_scale: (result as any).image_scale ?? 'md',
             text_scale: (result as any).text_scale ?? 'md',
             is_active: !!(result as any).is_active,
-            is_available: !!(result as any).is_available,
             is_featured: !!(result as any).is_featured,
             sort_order: Number((result as any).sort_order ?? 9999),
             metadata: {},
-            display_type: result.display_type,
             category_settings: {
               showSubProducts: false,
             },

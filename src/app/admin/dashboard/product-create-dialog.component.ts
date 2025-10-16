@@ -77,11 +77,9 @@ export class ProductCreateDialogComponent implements OnInit {
       categoryMode: ['existing', [Validators.required]],
       category: ['', [Validators.required]],
       new_category_title: [''],
-      display_type: ['product', [Validators.required]],
       image_scale: ['md', [Validators.required]],
       text_scale: ['lg', [Validators.required]],
       is_active: [true],
-      is_available: [true],
       is_featured: [false],
       sort_order: [9999, [Validators.required]],
       category_text_color: ['#1a1a1a']
@@ -193,10 +191,8 @@ export class ProductCreateDialogComponent implements OnInit {
           image_scale: formData.image_scale,
           text_scale: formData.text_scale,
           is_active: formData.is_active,
-          is_available: formData.is_available,
           is_featured: formData.is_featured,
-          sort_order: parseInt(formData.sort_order),
-          display_type: formData.display_type
+          sort_order: parseInt(formData.sort_order)
         };
 
         // Service handles slug generation, validation, and insertion
@@ -268,13 +264,19 @@ export class ProductCreateDialogComponent implements OnInit {
       image_scale: this.productForm.get('image_scale')?.value || 'md',
       text_scale: this.productForm.get('text_scale')?.value || 'md',
       is_active: this.productForm.get('is_active')?.value || true,
-      is_available: this.productForm.get('is_available')?.value || true,
       is_featured: this.productForm.get('is_featured')?.value || false,
       sort_order: this.productForm.get('sort_order')?.value || 0,
-      display_type: 'product',
       restaurant_slug: getRestaurantSlug(),
       created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
+      metadata: {
+        ingredients: [],
+        allergens: [],
+        variants: []
+      },
+      category_settings: {
+        showSubProducts: false
+      }
     } as Item;
   }
 
@@ -292,13 +294,19 @@ export class ProductCreateDialogComponent implements OnInit {
       image_scale: this.productForm.get('image_scale')?.value || 'md',
       text_scale: this.productForm.get('text_scale')?.value || 'md',
       is_active: this.productForm.get('is_active')?.value || true,
-      is_available: this.productForm.get('is_available')?.value || true,
       is_featured: this.productForm.get('is_featured')?.value || false,
       sort_order: this.productForm.get('sort_order')?.value || 0,
-      display_type: 'category',
       restaurant_slug: getRestaurantSlug(),
       created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
+      metadata: {
+        ingredients: [],
+        allergens: [],
+        variants: []
+      },
+      category_settings: {
+        showSubProducts: false
+      }
     } as Item;
   }
 }

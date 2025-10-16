@@ -160,16 +160,6 @@
 
       <mat-divider></mat-divider>
 
-      <!-- Anzeigetyp -->
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Anzeigetyp</mat-label>
-        <mat-select formControlName="display_type" required>
-          <mat-option value="product">🛍️ Nur als Produkt</mat-option>
-          <mat-option value="both">🔄 Produkt & Kategorie</mat-option>
-        </mat-select>
-        <mat-icon matSuffix>visibility</mat-icon>
-        <mat-hint>Bestimmt wo das Produkt angezeigt wird</mat-hint>
-      </mat-form-field>
 
       <!-- Darstellungsoptionen -->
       <div class="scale-row">
@@ -209,20 +199,16 @@
         <mat-checkbox formControlName="is_active" color="primary">
           <span class="checkbox-label">
             <mat-icon>visibility</mat-icon>
-            Produkt ist aktiv
+            Im Frontend sichtbar
           </span>
-        </mat-checkbox>
-        <mat-checkbox formControlName="is_available" color="primary">
-          <span class="checkbox-label">
-            <mat-icon>check_circle</mat-icon>
-            Verfügbar
-          </span>
+          <div class="checkbox-hint">Nur im Admin sichtbar wenn deaktiviert</div>
         </mat-checkbox>
         <mat-checkbox formControlName="is_featured" color="accent">
           <span class="checkbox-label">
             <mat-icon>star</mat-icon>
             Featured
           </span>
+          <div class="checkbox-hint">Spezielle Hervorhebung</div>
         </mat-checkbox>
       </div>
 
