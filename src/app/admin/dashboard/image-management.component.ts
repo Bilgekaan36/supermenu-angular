@@ -119,7 +119,14 @@ export class ImageManagementComponent implements OnInit {
   }
 
   getImageUrl(image: ImageWithUrl, type: 'product' | 'background'): string {
-    return image.url || this.supabase.resolveImageUrl(image.filename, type);
+    const url = image.url || this.supabase.resolveImageUrl(image.filename, type);
+    console.log('ImageManagement getImageUrl:', { 
+      imageName: image.display_name, 
+      filename: image.filename, 
+      type, 
+      url 
+    });
+    return url;
   }
 
   navigateToDashboard() {

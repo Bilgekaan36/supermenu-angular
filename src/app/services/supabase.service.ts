@@ -185,13 +185,21 @@ export class SupabaseService {
       }
 
       // Transform to ImageWithUrl with resolved URLs
-      const imagesWithUrl: ImageWithUrl[] = (data || []).map((img: any) => ({
-        ...img,
-        filename: img.storage_path, // Map storage_path to filename for compatibility
-        title: img.title, // For compatibility with existing code
-        storagePath: img.storage_path, // For compatibility with existing code
-        url: this.resolveImageUrl(img.storage_path, 'product')
-      }));
+      const imagesWithUrl: ImageWithUrl[] = (data || []).map((img: any) => {
+        const url = this.resolveImageUrl(img.storage_path, 'product');
+        console.log('Product image URL resolved:', { 
+          storage_path: img.storage_path, 
+          display_name: img.display_name, 
+          url 
+        });
+        return {
+          ...img,
+          filename: img.storage_path, // Map storage_path to filename for compatibility
+          title: img.title, // For compatibility with existing code
+          storagePath: img.storage_path, // For compatibility with existing code
+          url: url
+        };
+      });
 
       this.productImagesSignal.set(imagesWithUrl);
       return imagesWithUrl;
@@ -216,13 +224,21 @@ export class SupabaseService {
       }
 
       // Transform to ImageWithUrl with resolved URLs
-      const imagesWithUrl: ImageWithUrl[] = (data || []).map((img: any) => ({
-        ...img,
-        filename: img.storage_path, // Map storage_path to filename for compatibility
-        title: img.title, // For compatibility with existing code
-        storagePath: img.storage_path, // For compatibility with existing code
-        url: this.resolveImageUrl(img.storage_path, 'background')
-      }));
+      const imagesWithUrl: ImageWithUrl[] = (data || []).map((img: any) => {
+        const url = this.resolveImageUrl(img.storage_path, 'background');
+        console.log('Background image URL resolved:', { 
+          storage_path: img.storage_path, 
+          display_name: img.display_name, 
+          url 
+        });
+        return {
+          ...img,
+          filename: img.storage_path, // Map storage_path to filename for compatibility
+          title: img.title, // For compatibility with existing code
+          storagePath: img.storage_path, // For compatibility with existing code
+          url: url
+        };
+      });
 
       this.backgroundImagesSignal.set(imagesWithUrl);
       return imagesWithUrl;
@@ -274,17 +290,17 @@ export class SupabaseService {
     // Handle different path formats
     if (storagePath.startsWith('/')) {
       if (type === 'product') {
-        return `https://gcanfodziyqrfpobwmyb.supabase.co/storage/v1/object/public/product_images${storagePath}`;
+        return `https://gcanfodziyqrfpobwmyb.supabase.co/storage/v1/object/public/product-images${storagePath}`;
       } else {
-        return `https://gcanfodziyqrfpobwmyb.supabase.co/storage/v1/object/public/background_images${storagePath}`;
+        return `https://gcanfodziyqrfpobwmyb.supabase.co/storage/v1/object/public/background-images${storagePath}`;
       }
     }
     
     // Default handling
     if (type === 'product') {
-      return `https://gcanfodziyqrfpobwmyb.supabase.co/storage/v1/object/public/product_images/${storagePath}`;
+      return `https://gcanfodziyqrfpobwmyb.supabase.co/storage/v1/object/public/product-images/${storagePath}`;
     } else {
-      return `https://gcanfodziyqrfpobwmyb.supabase.co/storage/v1/object/public/background_images/${storagePath}`;
+      return `https://gcanfodziyqrfpobwmyb.supabase.co/storage/v1/object/public/background-images/${storagePath}`;
     }
   }
 
