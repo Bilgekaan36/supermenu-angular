@@ -107,6 +107,7 @@ export function getTextSizeClasses(
 
 // Supabase Storage URL für Bilder (flexible version)
 export function getFileUrl(bucket: string, path: string): string {
+  // Use hardcoded URL for now to avoid circular dependency
   const supabaseUrl = 'https://gcanfodziyqrfpobwmyb.supabase.co';
   
   // If path is empty, return empty string

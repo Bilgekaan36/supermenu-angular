@@ -4,6 +4,7 @@ import { SupabaseClient } from '@supabase/supabase-js';
 import { Item, Database } from '../models/item.model';
 import { ProductImage, BackgroundImage, ImageWithUrl } from '../models/image.model';
 import { AdminAuthService } from '../admin/services/admin-auth.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -33,8 +34,8 @@ export class SupabaseService {
   constructor(private adminAuth: AdminAuthService) {
     // Reuse the same authenticated client to avoid lock conflicts and satisfy RLS
     this.supabase = this.adminAuth.getClient();
-    // Extract Supabase URL from the client
-    this.supabaseUrl = (this.supabase as any).supabaseUrl || 'https://gcanfodziyqrfpobwmyb.supabase.co';
+    // Extract Supabase URL from the client or use environment
+    this.supabaseUrl = (this.supabase as any).supabaseUrl || environment.supabaseUrl;
   }
 
   // Test Connection Function
@@ -290,17 +291,17 @@ export class SupabaseService {
     // Handle different path formats
     if (storagePath.startsWith('/')) {
       if (type === 'product') {
-        return `https://gcanfodziyqrfpobwmyb.supabase.co/storage/v1/object/public/product-images${storagePath}`;
+        return `${environment.supabaseUrl}/storage/v1/object/public/product-images${storagePath}`;
       } else {
-        return `https://gcanfodziyqrfpobwmyb.supabase.co/storage/v1/object/public/background-images${storagePath}`;
+        return `${environment.supabaseUrl}/storage/v1/object/public/background-images${storagePath}`;
       }
     }
     
     // Default handling
     if (type === 'product') {
-      return `https://gcanfodziyqrfpobwmyb.supabase.co/storage/v1/object/public/product-images/${storagePath}`;
+      return `${environment.supabaseUrl}/storage/v1/object/public/product-images/${storagePath}`;
     } else {
-      return `https://gcanfodziyqrfpobwmyb.supabase.co/storage/v1/object/public/background-images/${storagePath}`;
+      return `${environment.supabaseUrl}/storage/v1/object/public/background-images/${storagePath}`;
     }
   }
 
