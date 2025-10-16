@@ -1,0 +1,157 @@
+<!-- src/app/admin/dashboard/image-management.component.html -->
+<div class="image-management-container">
+  <div class="navigation-bar">
+    <button mat-button (click)="navigateToDashboard()">
+      <mat-icon>arrow_back</mat-icon>
+      Zurück zum Dashboard
+    </button>
+    <span class="spacer"></span>
+    <button mat-button color="warn" (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      Abmelden
+    </button>
+  </div>
+
+  <div class="header">
+    <h1>Bildverwaltung</h1>
+    <p>Verwalten Sie Ihre Produktbilder und Hintergrundbilder</p>
+  </div>
+
+  <mat-tab-group class="image-tabs">
+    <!-- Product Images Tab -->
+    <mat-tab label="Produktbilder">
+      <div class="tab-content">
+        <div class="images-grid" *ngIf="!loading(); else loadingTemplate">
+          <mat-card *ngFor="let image of productImages()" class="image-card">
+            <div class="image-preview">
+              <img [src]="getImageUrl(image, 'product')" [alt]="image.display_name" />
+            </div>
+            
+            <mat-card-content>
+              <div class="image-info">
+                <!-- Edit Mode -->
+                <div *ngIf="editingImage?.id === image.id; else displayMode">
+                  <mat-form-field appearance="outline" class="name-input">
+                    <mat-label>Bildname</mat-label>
+                    <input 
+                      matInput 
+                      [(ngModel)]="editingImage!.displayName"
+                      placeholder="Bildname eingeben"
+                    />
+                  </mat-form-field>
+                  <div class="edit-actions">
+                    <button mat-button color="primary" (click)="saveEdit()">
+                      <mat-icon>check</mat-icon>
+                      Speichern
+                    </button>
+                    <button mat-button (click)="cancelEdit()">
+                      <mat-icon>close</mat-icon>
+                      Abbrechen
+                    </button>
+                  </div>
+                </div>
+                
+                <!-- Display Mode -->
+                <ng-template #displayMode>
+                  <h3 class="image-name">{{ image.display_name }}</h3>
+                  <p class="image-details">
+                    <small>Datei: {{ image.filename }}</small><br>
+                    <small>Hochgeladen: {{ image.created_at | date:'dd.MM.yyyy HH:mm' }}</small>
+                  </p>
+                  <div class="image-actions">
+                    <button mat-button color="primary" (click)="startEdit(image, 'product')">
+                      <mat-icon>edit</mat-icon>
+                      Umbenennen
+                    </button>
+                    <button mat-button color="warn" (click)="deleteImage(image, 'product')">
+                      <mat-icon>delete</mat-icon>
+                      Löschen
+                    </button>
+                  </div>
+                </ng-template>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+        
+        <div *ngIf="productImages().length === 0 && !loading()" class="empty-state">
+          <mat-icon>image</mat-icon>
+          <h3>Keine Produktbilder vorhanden</h3>
+          <p>Laden Sie Ihre ersten Produktbilder hoch, um sie hier zu verwalten.</p>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- Background Images Tab -->
+    <mat-tab label="Hintergrundbilder">
+      <div class="tab-content">
+        <div class="images-grid" *ngIf="!loading(); else loadingTemplate">
+          <mat-card *ngFor="let image of backgroundImages()" class="image-card">
+            <div class="image-preview">
+              <img [src]="getImageUrl(image, 'background')" [alt]="image.display_name" />
+            </div>
+            
+            <mat-card-content>
+              <div class="image-info">
+                <!-- Edit Mode -->
+                <div *ngIf="editingImage?.id === image.id; else displayModeBg">
+                  <mat-form-field appearance="outline" class="name-input">
+                    <mat-label>Bildname</mat-label>
+                    <input 
+                      matInput 
+                      [(ngModel)]="editingImage!.displayName"
+                      placeholder="Bildname eingeben"
+                    />
+                  </mat-form-field>
+                  <div class="edit-actions">
+                    <button mat-button color="primary" (click)="saveEdit()">
+                      <mat-icon>check</mat-icon>
+                      Speichern
+                    </button>
+                    <button mat-button (click)="cancelEdit()">
+                      <mat-icon>close</mat-icon>
+                      Abbrechen
+                    </button>
+                  </div>
+                </div>
+                
+                <!-- Display Mode -->
+                <ng-template #displayModeBg>
+                  <h3 class="image-name">{{ image.display_name }}</h3>
+                  <p class="image-details">
+                    <small>Datei: {{ image.filename }}</small><br>
+                    <small>Hochgeladen: {{ image.created_at | date:'dd.MM.yyyy HH:mm' }}</small>
+                  </p>
+                  <div class="image-actions">
+                    <button mat-button color="primary" (click)="startEdit(image, 'background')">
+                      <mat-icon>edit</mat-icon>
+                      Umbenennen
+                    </button>
+                    <button mat-button color="warn" (click)="deleteImage(image, 'background')">
+                      <mat-icon>delete</mat-icon>
+                      Löschen
+                    </button>
+                  </div>
+                </ng-template>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+        
+        <div *ngIf="backgroundImages().length === 0 && !loading()" class="empty-state">
+          <mat-icon>wallpaper</mat-icon>
+          <h3>Keine Hintergrundbilder vorhanden</h3>
+          <p>Laden Sie Ihre ersten Hintergrundbilder hoch, um sie hier zu verwalten.</p>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+
+  <!-- Loading Template -->
+  <ng-template #loadingTemplate>
+    <div class="loading-state">
+      <mat-icon class="loading-icon">refresh</mat-icon>
+      <p>Bilder werden geladen...</p>
+    </div>
+  </ng-template>
+</div>

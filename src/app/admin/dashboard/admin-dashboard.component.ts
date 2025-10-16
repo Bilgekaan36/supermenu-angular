@@ -362,6 +362,10 @@ export class AdminDashboardComponent implements OnInit {
     }
   }
 
+  navigateToImages() {
+    this.router.navigate(['/admin/images']);
+  }
+
   clearError() {
     this.errorSignal.set(null);
   }

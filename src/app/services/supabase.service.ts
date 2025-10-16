@@ -2,6 +2,7 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { Item, Database } from '../models/item.model';
+import { ProductImage, BackgroundImage, ImageWithUrl } from '../models/image.model';
 import { AdminAuthService } from '../admin/services/admin-auth.service';
 
 @Injectable({
@@ -18,12 +19,16 @@ export class SupabaseService {
   private categoriesSignal = signal<Item[]>([]);
   private categoryProductsSignal = signal<Item[]>([]);
   private featuredProductsSignal = signal<Item[]>([]);
+  private productImagesSignal = signal<ImageWithUrl[]>([]);
+  private backgroundImagesSignal = signal<ImageWithUrl[]>([]);
   
   // Computed values
   public readonly items = computed(() => this.itemsSignal());
   public readonly categories = computed(() => this.categoriesSignal());
   public readonly categoryProducts = computed(() => this.categoryProductsSignal());
   public readonly featuredProducts = computed(() => this.featuredProductsSignal());
+  public readonly productImages = computed(() => this.productImagesSignal());
+  public readonly backgroundImages = computed(() => this.backgroundImagesSignal());
 
   constructor(private adminAuth: AdminAuthService) {
     // Reuse the same authenticated client to avoid lock conflicts and satisfy RLS
@@ -159,6 +164,195 @@ export class SupabaseService {
       return data as Item[];
     } catch (error) {
       console.error('Error fetching featured products:', error);
+      throw error;
+    }
+  }
+
+  // ===== IMAGE MANAGEMENT =====
+
+  // Fetch product images with display names
+  async fetchProductImages(restaurantSlug: string): Promise<ImageWithUrl[]> {
+    try {
+      const { data, error } = await this.supabase
+        .from('product_images')
+        .select('*')
+        .eq('restaurant_slug', restaurantSlug)
+        .order('display_name', { ascending: true });
+
+      if (error) {
+        console.error('Product images fetch error:', error);
+        throw new Error(`Failed to fetch product images: ${error.message}`);
+      }
+
+      // Transform to ImageWithUrl with resolved URLs
+      const imagesWithUrl: ImageWithUrl[] = (data || []).map((img: any) => {
+        const url = this.resolveImageUrl(img.storage_path, 'product');
+        console.log('Product image URL resolved:', { 
+          storage_path: img.storage_path, 
+          display_name: img.display_name, 
+          url 
+        });
+        return {
+          ...img,
+          filename: img.storage_path, // Map storage_path to filename for compatibility
+          title: img.title, // For compatibility with existing code
+          storagePath: img.storage_path, // For compatibility with existing code
+          url: url
+        };
+      });
+
+      this.productImagesSignal.set(imagesWithUrl);
+      return imagesWithUrl;
+    } catch (error) {
+      console.error('Error fetching product images:', error);
+      throw error;
+    }
+  }
+
+  // Fetch background images with display names
+  async fetchBackgroundImages(restaurantSlug: string): Promise<ImageWithUrl[]> {
+    try {
+      const { data, error } = await this.supabase
+        .from('background_images')
+        .select('*')
+        .eq('restaurant_slug', restaurantSlug)
+        .order('display_name', { ascending: true });
+
+      if (error) {
+        console.error('Background images fetch error:', error);
+        throw new Error(`Failed to fetch background images: ${error.message}`);
+      }
+
+      // Transform to ImageWithUrl with resolved URLs
+      const imagesWithUrl: ImageWithUrl[] = (data || []).map((img: any) => {
+        const url = this.resolveImageUrl(img.storage_path, 'background');
+        console.log('Background image URL resolved:', { 
+          storage_path: img.storage_path, 
+          display_name: img.display_name, 
+          url 
+        });
+        return {
+          ...img,
+          filename: img.storage_path, // Map storage_path to filename for compatibility
+          title: img.title, // For compatibility with existing code
+          storagePath: img.storage_path, // For compatibility with existing code
+          url: url
+        };
+      });
+
+      this.backgroundImagesSignal.set(imagesWithUrl);
+      return imagesWithUrl;
+    } catch (error) {
+      console.error('Error fetching background images:', error);
+      throw error;
+    }
+  }
+
+  // Update image display name
+  async updateImageDisplayName(imageId: string, displayName: string, imageType: 'product' | 'background'): Promise<void> {
+    try {
+      const tableName = imageType === 'product' ? 'product_images' : 'background_images';
+      
+      const { error } = await this.supabase
+        .from(tableName)
+        .update({ 
+          display_name: displayName,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', imageId);
+
+      if (error) {
+        console.error('Update image name error:', error);
+        throw new Error(`Failed to update image name: ${error.message}`);
+      }
+
+      // Refresh the images list
+      const restaurantSlug = (globalThis as any).restaurantSlug || 'eiscafe-remi';
+      if (imageType === 'product') {
+        await this.fetchProductImages(restaurantSlug);
+      } else {
+        await this.fetchBackgroundImages(restaurantSlug);
+      }
+    } catch (error) {
+      console.error('Error updating image name:', error);
+      throw error;
+    }
+  }
+
+  // Resolve image URL from storage path
+  resolveImageUrl(storagePath: string, type: 'product' | 'background'): string {
+    if (!storagePath) return '';
+    
+    if (/^https?:\/\//i.test(storagePath)) {
+      return storagePath;
+    }
+    
+    // Handle different path formats
+    if (storagePath.startsWith('/')) {
+      if (type === 'product') {
+        return `https://gcanfodziyqrfpobwmyb.supabase.co/storage/v1/object/public/product-images${storagePath}`;
+      } else {
+        return `https://gcanfodziyqrfpobwmyb.supabase.co/storage/v1/object/public/background-images${storagePath}`;
+      }
+    }
+    
+    // Default handling
+    if (type === 'product') {
+      return `https://gcanfodziyqrfpobwmyb.supabase.co/storage/v1/object/public/product-images/${storagePath}`;
+    } else {
+      return `https://gcanfodziyqrfpobwmyb.supabase.co/storage/v1/object/public/background-images/${storagePath}`;
+    }
+  }
+
+  // Generate user-friendly display name from storage path
+  generateDisplayName(storagePath: string): string {
+    // Extract filename from storage path (e.g., /restaurants/eiscafe-remi/products/filename.webp)
+    const filename = storagePath.split('/').pop() || storagePath;
+    
+    // Remove file extension
+    const nameWithoutExt = filename.split('.')[0];
+    
+    // Extract timestamp if present (format: timestamp_name)
+    const parts = nameWithoutExt.split('_');
+    if (parts.length > 1 && /^\d+$/.test(parts[0])) {
+      const timestamp = parts[0];
+      const namePart = parts.slice(1).join('_');
+      
+      // Convert snake_case to Title Case
+      const titleCase = namePart
+        .split('_')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+      
+      return `${titleCase} (${timestamp})`;
+    }
+    
+    // Fallback: convert filename to Title Case
+    return nameWithoutExt
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+  }
+
+  // Delete image from database and storage
+  async deleteImage(imageId: string, filename: string, imageType: 'product' | 'background'): Promise<void> {
+    try {
+      // Delete from database
+      const tableName = imageType === 'product' ? 'product_images' : 'background_images';
+      const { error } = await this.supabase
+        .from(tableName)
+        .delete()
+        .eq('id', imageId);
+
+      if (error) throw error;
+
+      // Delete from storage
+      const bucket = imageType === 'product' ? 'product-images' : 'background-images';
+      await this.supabase.storage
+        .from(bucket)
+        .remove([filename]);
+    } catch (error) {
+      console.error('Error deleting image:', error);
       throw error;
     }
   }
@@ -519,52 +713,6 @@ export class SupabaseService {
     }
   }
 
-  async fetchBackgroundImages(restaurantSlug: string): Promise<{ slug: string; title: string; storagePath: string; colorPrimary?: string; colorSecondary?: string; style?: string }[]> {
-    try {
-      const { data, error } = await this.supabase
-        .from('background_images')
-        .select('slug, title, storage_path, color_primary, color_secondary, style, sort_order')
-        .eq('restaurant_slug', restaurantSlug)
-        .eq('is_active', true)
-        .order('sort_order', { ascending: true });
-
-      if (error) throw error;
-      return (data || []).map((bg) => ({
-        slug: bg.slug,
-        title: bg.title,
-        storagePath: bg.storage_path,
-        colorPrimary: bg.color_primary,
-        colorSecondary: bg.color_secondary,
-        style: bg.style,
-      }));
-    } catch (error) {
-      console.error('Error fetching background images from table:', error);
-      return [];
-    }
-  }
-
-  async fetchProductImages(restaurantSlug: string): Promise<{ slug: string; title: string; storagePath: string; sortOrder: number; isActive: boolean }[]> {
-    try {
-      const { data, error } = await this.supabase
-        .from('product_images')
-        .select('slug, title, storage_path, sort_order, is_active')
-        .eq('restaurant_slug', restaurantSlug)
-        .eq('is_active', true)
-        .order('sort_order', { ascending: true });
-
-      if (error) throw error;
-      return (data || []).map((img) => ({
-        slug: img.slug,
-        title: img.title,
-        storagePath: img.storage_path,
-        sortOrder: img.sort_order,
-        isActive: img.is_active
-      }));
-    } catch (error) {
-      console.error('Error fetching product images from table:', error);
-      return [];
-    }
-  }
 
   async createProductImage(imageData: {
     slug: string;
@@ -574,11 +722,15 @@ export class SupabaseService {
     sortOrder?: number;
   }): Promise<void> {
     try {
+      // Generate display_name from title or storage path
+      const displayName = imageData.title || this.generateDisplayName(imageData.storagePath);
+      
       const { error } = await this.supabase
         .from('product_images')
         .insert({
           slug: imageData.slug,
           title: imageData.title,
+          display_name: displayName,
           storage_path: imageData.storagePath,
           restaurant_slug: imageData.restaurantSlug,
           sort_order: imageData.sortOrder || 9999,
@@ -588,6 +740,42 @@ export class SupabaseService {
       if (error) throw error;
     } catch (error) {
       console.error('Error creating product image:', error);
+      throw error;
+    }
+  }
+
+  async createBackgroundImage(imageData: {
+    slug: string;
+    title: string;
+    storagePath: string;
+    restaurantSlug: string;
+    sortOrder?: number;
+    colorPrimary?: string;
+    colorSecondary?: string;
+    style?: string;
+  }): Promise<void> {
+    try {
+      // Generate display_name from title or storage path
+      const displayName = imageData.title || this.generateDisplayName(imageData.storagePath);
+      
+      const { error } = await this.supabase
+        .from('background_images')
+        .insert({
+          slug: imageData.slug,
+          title: imageData.title,
+          display_name: displayName,
+          storage_path: imageData.storagePath,
+          restaurant_slug: imageData.restaurantSlug,
+          sort_order: imageData.sortOrder || 9999,
+          color_primary: imageData.colorPrimary,
+          color_secondary: imageData.colorSecondary,
+          style: imageData.style,
+          is_active: true
+        });
+
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error creating background image:', error);
       throw error;
     }
   }
