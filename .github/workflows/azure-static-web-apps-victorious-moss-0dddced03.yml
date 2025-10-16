@@ -40,6 +40,7 @@ jobs:
           app_location: "/" # App source code path
           api_location: "" # Api source code path - optional
           output_location: "dist/supermenu-angular/browser" # Built app content directory - optional
+          skip_app_build: true # Skip Oryx build, use our GitHub Actions build
           ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:
