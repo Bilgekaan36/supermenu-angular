@@ -40,7 +40,6 @@ export interface Item {
   };
 
   // Meta-Information für Frontend-Logik
-  display_type: 'category' | 'product' | 'both';
   category_settings: CategoryDisplaySettings;
 }
 

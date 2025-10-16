@@ -77,7 +77,6 @@ export class ProductCreateDialogComponent implements OnInit {
       categoryMode: ['existing', [Validators.required]],
       category: ['', [Validators.required]],
       new_category_title: [''],
-      display_type: ['product', [Validators.required]],
       image_scale: ['md', [Validators.required]],
       text_scale: ['lg', [Validators.required]],
       is_active: [true],
@@ -193,8 +192,7 @@ export class ProductCreateDialogComponent implements OnInit {
           text_scale: formData.text_scale,
           is_active: formData.is_active,
           is_featured: formData.is_featured,
-          sort_order: parseInt(formData.sort_order),
-          display_type: formData.display_type
+          sort_order: parseInt(formData.sort_order)
         };
 
         // Service handles slug generation, validation, and insertion

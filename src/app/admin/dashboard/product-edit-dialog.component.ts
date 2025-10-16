@@ -203,7 +203,6 @@ export class ProductEditDialogComponent implements OnInit {
       sort_order: Number(raw.sort_order),
       product_image_url: this.selectedProductImage,
       background_image_url: this.selectedBackgroundImage,
-      display_type: (this.data.item.display_type || 'product') as any,
     } as Partial<Item>;
 
     this.dialogRef.close(updates);
@@ -262,7 +261,6 @@ export class ProductEditDialogComponent implements OnInit {
       is_active: this.form.get('is_active')?.value || true,
       is_featured: this.form.get('is_featured')?.value || false,
       sort_order: this.form.get('sort_order')?.value || 0,
-      display_type: 'product',
       restaurant_slug: getRestaurantSlug(),
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
@@ -285,7 +283,6 @@ export class ProductEditDialogComponent implements OnInit {
       is_active: this.form.get('is_active')?.value || true,
       is_featured: this.form.get('is_featured')?.value || false,
       sort_order: this.form.get('sort_order')?.value || 0,
-      display_type: 'category',
       restaurant_slug: getRestaurantSlug(),
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()

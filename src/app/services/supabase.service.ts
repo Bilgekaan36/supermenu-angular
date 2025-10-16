@@ -89,7 +89,7 @@ export class SupabaseService {
         .from('items')
         .select('*')
         .eq('restaurant_slug', restaurantSlug)
-        .in('display_type', ['category', 'both'])
+        .eq('is_featured', true) // Featured products are category showcase products
         .is('parent_id', null) // Nur Hauptkategorien
         .eq('is_active', true)
         .order('sort_order', { ascending: true });
@@ -119,7 +119,6 @@ export class SupabaseService {
         .select('*')
         .eq('restaurant_slug', restaurantSlug)
         .eq('category_slug', categorySlug)
-        .in('display_type', ['product', 'both'])
         .is('parent_id', null)
         .eq('is_active', true)
         .order('sort_order', { ascending: true });
@@ -146,7 +145,6 @@ export class SupabaseService {
         .select('*')
         .eq('restaurant_slug', restaurantSlug)
         .eq('product_slug', productSlug)
-        .in('display_type', ['product'])
         .eq('is_featured', true)
         .eq('is_active', true)
         .order('sort_order', { ascending: true });
@@ -278,6 +276,35 @@ export class SupabaseService {
     }
   }
 
+  // Check if category already has a featured product
+  async checkFeaturedProductExists(restaurantSlug: string, categorySlug: string, excludeId?: string): Promise<boolean> {
+    try {
+      let query = this.supabase
+        .from('items')
+        .select('id')
+        .eq('restaurant_slug', restaurantSlug)
+        .eq('category_slug', categorySlug)
+        .eq('is_featured', true)
+        .eq('is_active', true);
+
+      if (excludeId) {
+        query = query.neq('id', excludeId);
+      }
+
+      const { data, error } = await query;
+
+      if (error) {
+        console.error('Error checking featured product:', error);
+        return false;
+      }
+
+      return data && data.length > 0;
+    } catch (error) {
+      console.error('Error checking featured product:', error);
+      return false;
+    }
+  }
+
   // Create new product with automatic slug generation
   async createProduct(productData: {
     title: string;
@@ -292,7 +319,6 @@ export class SupabaseService {
     is_active: boolean;
     is_featured: boolean;
     sort_order: number;
-    display_type: string;
   }): Promise<Item> {
     try {
       // Ensure there is a session
@@ -300,6 +326,14 @@ export class SupabaseService {
       if (!session) throw new Error('Nicht eingeloggt. Bitte im Admin-Bereich anmelden.');
 
       const restaurantSlug = (globalThis as any).restaurantSlug || 'eiscafe-remi';
+
+      // Check if trying to create featured product when one already exists
+      if (productData.is_featured) {
+        const featuredExists = await this.checkFeaturedProductExists(restaurantSlug, productData.category_slug);
+        if (featuredExists) {
+          throw new Error(`Diese Kategorie hat bereits ein Featured-Produkt. Nur ein Featured-Produkt pro Kategorie erlaubt.`);
+        }
+      }
 
       // Generate unique product slug from title
       const baseSlug = this.slugify(productData.title);

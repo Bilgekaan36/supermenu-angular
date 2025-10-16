@@ -77,7 +77,7 @@ export class AdminDashboardComponent implements OnInit {
   // Computed für Produkte
   public readonly products = computed(() =>
     this.allItems().filter(
-      (item) => item.display_type === 'product' || item.display_type === 'both'
+      (item) => true // All items are now products (featured items are category showcase products)
     )
   );
 
@@ -322,7 +322,6 @@ export class AdminDashboardComponent implements OnInit {
             is_featured: !!(result as any).is_featured,
             sort_order: Number((result as any).sort_order ?? 9999),
             metadata: {},
-            display_type: result.display_type,
             category_settings: {
               showSubProducts: false,
             },
