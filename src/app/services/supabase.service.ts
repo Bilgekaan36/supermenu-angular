@@ -149,7 +149,6 @@ export class SupabaseService {
         .in('display_type', ['product'])
         .eq('is_featured', true)
         .eq('is_active', true)
-        .eq('is_available', true)
         .order('sort_order', { ascending: true });
 
       if (error) {

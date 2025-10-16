@@ -157,6 +157,14 @@
   font-weight: 500;
 }
 
+.checkbox-hint {
+  font-size: 0.75rem;
+  color: #666;
+  margin-top: 2px;
+  margin-left: 24px;
+  font-style: italic;
+}
+
 .checkbox-label mat-icon {
   font-size: 1.2rem;
   width: 1.2rem;

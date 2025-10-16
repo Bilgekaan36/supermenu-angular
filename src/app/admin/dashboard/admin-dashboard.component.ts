@@ -319,7 +319,6 @@ export class AdminDashboardComponent implements OnInit {
             image_scale: (result as any).image_scale ?? 'md',
             text_scale: (result as any).text_scale ?? 'md',
             is_active: !!(result as any).is_active,
-            is_available: !!(result as any).is_available,
             is_featured: !!(result as any).is_featured,
             sort_order: Number((result as any).sort_order ?? 9999),
             metadata: {},

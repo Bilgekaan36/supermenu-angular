@@ -209,20 +209,16 @@
         <mat-checkbox formControlName="is_active" color="primary">
           <span class="checkbox-label">
             <mat-icon>visibility</mat-icon>
-            Produkt ist aktiv
+            Im Frontend sichtbar
           </span>
-        </mat-checkbox>
-        <mat-checkbox formControlName="is_available" color="primary">
-          <span class="checkbox-label">
-            <mat-icon>check_circle</mat-icon>
-            Verfügbar
-          </span>
+          <div class="checkbox-hint">Nur im Admin sichtbar wenn deaktiviert</div>
         </mat-checkbox>
         <mat-checkbox formControlName="is_featured" color="accent">
           <span class="checkbox-label">
             <mat-icon>star</mat-icon>
             Featured
           </span>
+          <div class="checkbox-hint">Spezielle Hervorhebung</div>
         </mat-checkbox>
       </div>
 

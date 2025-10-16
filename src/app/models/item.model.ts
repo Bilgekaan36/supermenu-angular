@@ -28,9 +28,8 @@ export interface Item {
   text_scale: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
   // Status & Sortierung
-  is_active: boolean;
-  is_available?: boolean;
-  is_featured?: boolean;
+  is_active: boolean;        // Sichtbarkeit im Frontend (true = sichtbar, false = nur Admin)
+  is_featured: boolean;      // Spezielle Hervorhebung
   sort_order: number;
 
   // Produktspezifische Daten (JSONB)
