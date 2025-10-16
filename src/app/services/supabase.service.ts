@@ -188,6 +188,8 @@ export class SupabaseService {
       const imagesWithUrl: ImageWithUrl[] = (data || []).map((img: any) => ({
         ...img,
         filename: img.storage_path, // Map storage_path to filename for compatibility
+        title: img.title, // For compatibility with existing code
+        storagePath: img.storage_path, // For compatibility with existing code
         url: this.resolveImageUrl(img.storage_path, 'product')
       }));
 
@@ -217,6 +219,8 @@ export class SupabaseService {
       const imagesWithUrl: ImageWithUrl[] = (data || []).map((img: any) => ({
         ...img,
         filename: img.storage_path, // Map storage_path to filename for compatibility
+        title: img.title, // For compatibility with existing code
+        storagePath: img.storage_path, // For compatibility with existing code
         url: this.resolveImageUrl(img.storage_path, 'background')
       }));
 
@@ -256,6 +260,31 @@ export class SupabaseService {
     } catch (error) {
       console.error('Error updating image name:', error);
       throw error;
+    }
+  }
+
+  // Resolve image URL from storage path
+  resolveImageUrl(storagePath: string, type: 'product' | 'background'): string {
+    if (!storagePath) return '';
+    
+    if (/^https?:\/\//i.test(storagePath)) {
+      return storagePath;
+    }
+    
+    // Handle different path formats
+    if (storagePath.startsWith('/')) {
+      if (type === 'product') {
+        return `https://gcanfodziyqrfpobwmyb.supabase.co/storage/v1/object/public/product_images${storagePath}`;
+      } else {
+        return `https://gcanfodziyqrfpobwmyb.supabase.co/storage/v1/object/public/background_images${storagePath}`;
+      }
+    }
+    
+    // Default handling
+    if (type === 'product') {
+      return `https://gcanfodziyqrfpobwmyb.supabase.co/storage/v1/object/public/product_images/${storagePath}`;
+    } else {
+      return `https://gcanfodziyqrfpobwmyb.supabase.co/storage/v1/object/public/background_images/${storagePath}`;
     }
   }
 
@@ -645,52 +674,6 @@ export class SupabaseService {
     }
   }
 
-  async fetchBackgroundImages(restaurantSlug: string): Promise<{ slug: string; title: string; storagePath: string; colorPrimary?: string; colorSecondary?: string; style?: string }[]> {
-    try {
-      const { data, error } = await this.supabase
-        .from('background_images')
-        .select('slug, title, storage_path, color_primary, color_secondary, style, sort_order')
-        .eq('restaurant_slug', restaurantSlug)
-        .eq('is_active', true)
-        .order('sort_order', { ascending: true });
-
-      if (error) throw error;
-      return (data || []).map((bg) => ({
-        slug: bg.slug,
-        title: bg.title,
-        storagePath: bg.storage_path,
-        colorPrimary: bg.color_primary,
-        colorSecondary: bg.color_secondary,
-        style: bg.style,
-      }));
-    } catch (error) {
-      console.error('Error fetching background images from table:', error);
-      return [];
-    }
-  }
-
-  async fetchProductImages(restaurantSlug: string): Promise<{ slug: string; title: string; storagePath: string; sortOrder: number; isActive: boolean }[]> {
-    try {
-      const { data, error } = await this.supabase
-        .from('product_images')
-        .select('slug, title, storage_path, sort_order, is_active')
-        .eq('restaurant_slug', restaurantSlug)
-        .eq('is_active', true)
-        .order('sort_order', { ascending: true });
-
-      if (error) throw error;
-      return (data || []).map((img) => ({
-        slug: img.slug,
-        title: img.title,
-        storagePath: img.storage_path,
-        sortOrder: img.sort_order,
-        isActive: img.is_active
-      }));
-    } catch (error) {
-      console.error('Error fetching product images from table:', error);
-      return [];
-    }
-  }
 
   async createProductImage(imageData: {
     slug: string;

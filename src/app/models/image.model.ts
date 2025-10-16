@@ -24,9 +24,18 @@ export interface ImageWithUrl {
   id: string;
   filename: string;
   display_name: string;
+  title: string;               // For compatibility with existing code
+  storagePath: string;         // For compatibility with existing code
   description?: string;
   url: string;                 // Full resolved URL
   restaurant_slug: string;
   created_at: string;
   updated_at: string;
+  // Background image specific fields
+  style?: string;
+  colorPrimary?: string;
+  colorSecondary?: string;
+  // Product image specific fields
+  sortOrder?: number;
+  isActive?: boolean;
 }
