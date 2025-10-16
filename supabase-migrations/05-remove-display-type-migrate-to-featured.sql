@@ -33,8 +33,8 @@ WHERE is_featured = true AND is_active = true;
 -- Step 5: Remove the temporary column
 ALTER TABLE items DROP COLUMN IF EXISTS migration_temp_featured;
 
--- Step 6: Remove display_type column (commented out for safety - uncomment when ready)
--- ALTER TABLE items DROP COLUMN IF EXISTS display_type;
+-- Step 6: Remove display_type column
+ALTER TABLE items DROP COLUMN IF EXISTS display_type;
 
 -- Add helpful comment
 COMMENT ON COLUMN items.is_featured IS 'Featured products are category showcase products (replaces display_type: both). Only one featured product allowed per category.';

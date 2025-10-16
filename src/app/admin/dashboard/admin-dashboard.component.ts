@@ -109,9 +109,16 @@ export class AdminDashboardComponent implements OnInit {
     this.errorSignal.set(null);
 
     try {
+      console.log('Loading data from Supabase...');
       const items = await this.supabaseService.fetchAllItems('eiscafe-remi');
+      console.log('Fetched items:', items);
+      console.log('Items count:', items.length);
+      
       this.allItemsSignal.set(items);
       this.applyFilters();
+      
+      console.log('All items signal:', this.allItems());
+      console.log('Products computed:', this.products());
     } catch (error) {
       console.error('Error loading data:', error);
       const errorMessage = 'Fehler beim Laden der Daten';
