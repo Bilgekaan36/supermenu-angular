@@ -109,21 +109,7 @@ export class ImageManagementComponent implements OnInit {
     if (!confirmed) return;
 
     try {
-      // Delete from database
-      const tableName = type === 'product' ? 'product_images' : 'background_images';
-      const { error } = await this.supabase.supabase
-        .from(tableName)
-        .delete()
-        .eq('id', image.id);
-
-      if (error) throw error;
-
-      // Delete from storage
-      const bucket = type === 'product' ? 'product-images' : 'background-images';
-      await this.supabase.supabase.storage
-        .from(bucket)
-        .remove([image.filename]);
-
+      await this.supabase.deleteImage(image.id, image.filename, type);
       this.snackBar.open('Bild erfolgreich gelöscht', 'Schließen', { duration: 2000 });
       await this.loadImages(); // Reload to get updated data
     } catch (error) {

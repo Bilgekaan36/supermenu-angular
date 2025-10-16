@@ -318,6 +318,29 @@ export class SupabaseService {
       .join(' ');
   }
 
+  // Delete image from database and storage
+  async deleteImage(imageId: string, filename: string, imageType: 'product' | 'background'): Promise<void> {
+    try {
+      // Delete from database
+      const tableName = imageType === 'product' ? 'product_images' : 'background_images';
+      const { error } = await this.supabase
+        .from(tableName)
+        .delete()
+        .eq('id', imageId);
+
+      if (error) throw error;
+
+      // Delete from storage
+      const bucket = imageType === 'product' ? 'product-images' : 'background-images';
+      await this.supabase.storage
+        .from(bucket)
+        .remove([filename]);
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      throw error;
+    }
+  }
+
   // ===== ADMIN CRUD OPERATIONS =====
 
   // Fetch all items for admin (including inactive)
