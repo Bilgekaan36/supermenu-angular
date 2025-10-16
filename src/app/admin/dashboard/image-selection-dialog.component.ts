@@ -63,9 +63,9 @@ export class ImageSelectionDialogComponent implements OnInit {
         const productImages = await this.supabase.fetchProductImages(this.data.restaurantSlug || getRestaurantSlug());
         
         this.images = productImages.map(img => ({
-          name: img.title,
-          path: img.storagePath,
-          url: this.getImageUrl('product-images', img.storagePath),
+          name: img.display_name || img.title,
+          path: img.filename,
+          url: this.getImageUrl('product-images', img.filename),
           size: undefined,
           lastModified: undefined
         }));
@@ -74,9 +74,9 @@ export class ImageSelectionDialogComponent implements OnInit {
         const backgroundImages = await this.supabase.fetchBackgroundImages(this.data.restaurantSlug || getRestaurantSlug());
         
         this.images = backgroundImages.map(img => ({
-          name: img.title,
-          path: img.storagePath,
-          url: this.getBackgroundImageUrl(img.storagePath),
+          name: img.display_name || img.title,
+          path: img.filename,
+          url: this.getBackgroundImageUrl(img.filename),
           size: undefined,
           lastModified: undefined
         }));
@@ -200,8 +200,21 @@ export class ImageSelectionDialogComponent implements OnInit {
     }
 
     try {
-      const bucket = this.data.type === 'product' ? 'product-images' : 'background-images';
-      await this.supabase.deleteFileByPath(`${image.path}`);
+      // Find the image in the database to get its ID
+      const imageData = this.data.type === 'product' 
+        ? await this.supabase.fetchProductImages(this.data.restaurantSlug || getRestaurantSlug())
+        : await this.supabase.fetchBackgroundImages(this.data.restaurantSlug || getRestaurantSlug());
+      
+      const dbImage = imageData.find(img => img.filename === image.path);
+      
+      if (dbImage) {
+        // Delete from database and storage using the new method
+        await this.supabase.deleteImage(dbImage.id, image.path, this.data.type);
+      } else {
+        // Fallback: only delete from storage if not found in database
+        const bucket = this.data.type === 'product' ? 'product-images' : 'background-images';
+        await this.supabase.deleteFileByPath(`${image.path}`);
+      }
       
       // Remove from local array
       this.images = this.images.filter(img => img.path !== image.path);
@@ -211,7 +224,7 @@ export class ImageSelectionDialogComponent implements OnInit {
         this.selectedImage = null;
       }
       
-      this.snackBar.open('Bild gelöscht', 'Schließen', { duration: 2000 });
+      this.snackBar.open('Bild erfolgreich gelöscht', 'Schließen', { duration: 2000 });
     } catch (error) {
       console.error('Error deleting image:', error);
       this.snackBar.open('Fehler beim Löschen des Bildes', 'Schließen', { duration: 3000 });
