@@ -187,7 +187,8 @@ export class SupabaseService {
       // Transform to ImageWithUrl with resolved URLs
       const imagesWithUrl: ImageWithUrl[] = (data || []).map((img: any) => ({
         ...img,
-        url: this.resolveImageUrl(img.filename, 'product')
+        filename: img.storage_path, // Map storage_path to filename for compatibility
+        url: this.resolveImageUrl(img.storage_path, 'product')
       }));
 
       this.productImagesSignal.set(imagesWithUrl);
@@ -215,7 +216,8 @@ export class SupabaseService {
       // Transform to ImageWithUrl with resolved URLs
       const imagesWithUrl: ImageWithUrl[] = (data || []).map((img: any) => ({
         ...img,
-        url: this.resolveImageUrl(img.filename, 'background')
+        filename: img.storage_path, // Map storage_path to filename for compatibility
+        url: this.resolveImageUrl(img.storage_path, 'background')
       }));
 
       this.backgroundImagesSignal.set(imagesWithUrl);
@@ -257,8 +259,11 @@ export class SupabaseService {
     }
   }
 
-  // Generate user-friendly display name from filename
-  generateDisplayName(filename: string): string {
+  // Generate user-friendly display name from storage path
+  generateDisplayName(storagePath: string): string {
+    // Extract filename from storage path (e.g., /restaurants/eiscafe-remi/products/filename.webp)
+    const filename = storagePath.split('/').pop() || storagePath;
+    
     // Remove file extension
     const nameWithoutExt = filename.split('.')[0];
     

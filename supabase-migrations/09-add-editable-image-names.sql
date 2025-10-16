@@ -12,30 +12,14 @@ ALTER TABLE product_images ADD COLUMN IF NOT EXISTS description TEXT;
 ALTER TABLE background_images ADD COLUMN IF NOT EXISTS display_name VARCHAR(255);
 ALTER TABLE background_images ADD COLUMN IF NOT EXISTS description TEXT;
 
--- Step 3: Populate display_name with filename-based names
--- Extract readable names from filenames and add timestamp for uniqueness
+-- Step 3: Populate display_name with title-based names
+-- Use existing title field as base for display_name
 UPDATE product_images 
-SET display_name = CASE 
-  WHEN filename ~ '^[0-9]+_(.+)\.[^.]+$' THEN 
-    -- Extract name after timestamp underscore
-    INITCAP(REGEXP_REPLACE(REGEXP_REPLACE(SPLIT_PART(SPLIT_PART(filename, '_', 2), '.', 1), '_', ' '), '-', ' '))
-    || ' (' || SPLIT_PART(filename, '_', 1) || ')'
-  ELSE 
-    -- Fallback: use filename without extension
-    INITCAP(REGEXP_REPLACE(REGEXP_REPLACE(SPLIT_PART(filename, '.', 1), '_', ' '), '-', ' '))
-END
+SET display_name = title
 WHERE display_name IS NULL;
 
 UPDATE background_images 
-SET display_name = CASE 
-  WHEN filename ~ '^[0-9]+_(.+)\.[^.]+$' THEN 
-    -- Extract name after timestamp underscore
-    INITCAP(REGEXP_REPLACE(REGEXP_REPLACE(SPLIT_PART(SPLIT_PART(filename, '_', 2), '.', 1), '_', ' '), '-', ' '))
-    || ' (' || SPLIT_PART(filename, '_', 1) || ')'
-  ELSE 
-    -- Fallback: use filename without extension
-    INITCAP(REGEXP_REPLACE(REGEXP_REPLACE(SPLIT_PART(filename, '.', 1), '_', ' '), '-', ' '))
-END
+SET display_name = title
 WHERE display_name IS NULL;
 
 -- Step 4: Add constraints and indexes
