@@ -2,6 +2,7 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { Item, Database } from '../models/item.model';
+import { ProductImage, BackgroundImage, ImageWithUrl } from '../models/image.model';
 import { AdminAuthService } from '../admin/services/admin-auth.service';
 
 @Injectable({
@@ -18,12 +19,16 @@ export class SupabaseService {
   private categoriesSignal = signal<Item[]>([]);
   private categoryProductsSignal = signal<Item[]>([]);
   private featuredProductsSignal = signal<Item[]>([]);
+  private productImagesSignal = signal<ImageWithUrl[]>([]);
+  private backgroundImagesSignal = signal<ImageWithUrl[]>([]);
   
   // Computed values
   public readonly items = computed(() => this.itemsSignal());
   public readonly categories = computed(() => this.categoriesSignal());
   public readonly categoryProducts = computed(() => this.categoryProductsSignal());
   public readonly featuredProducts = computed(() => this.featuredProductsSignal());
+  public readonly productImages = computed(() => this.productImagesSignal());
+  public readonly backgroundImages = computed(() => this.backgroundImagesSignal());
 
   constructor(private adminAuth: AdminAuthService) {
     // Reuse the same authenticated client to avoid lock conflicts and satisfy RLS
@@ -161,6 +166,122 @@ export class SupabaseService {
       console.error('Error fetching featured products:', error);
       throw error;
     }
+  }
+
+  // ===== IMAGE MANAGEMENT =====
+
+  // Fetch product images with display names
+  async fetchProductImages(restaurantSlug: string): Promise<ImageWithUrl[]> {
+    try {
+      const { data, error } = await this.supabase
+        .from('product_images')
+        .select('*')
+        .eq('restaurant_slug', restaurantSlug)
+        .order('display_name', { ascending: true });
+
+      if (error) {
+        console.error('Product images fetch error:', error);
+        throw new Error(`Failed to fetch product images: ${error.message}`);
+      }
+
+      // Transform to ImageWithUrl with resolved URLs
+      const imagesWithUrl: ImageWithUrl[] = (data || []).map((img: any) => ({
+        ...img,
+        url: this.resolveImageUrl(img.filename, 'product')
+      }));
+
+      this.productImagesSignal.set(imagesWithUrl);
+      return imagesWithUrl;
+    } catch (error) {
+      console.error('Error fetching product images:', error);
+      throw error;
+    }
+  }
+
+  // Fetch background images with display names
+  async fetchBackgroundImages(restaurantSlug: string): Promise<ImageWithUrl[]> {
+    try {
+      const { data, error } = await this.supabase
+        .from('background_images')
+        .select('*')
+        .eq('restaurant_slug', restaurantSlug)
+        .order('display_name', { ascending: true });
+
+      if (error) {
+        console.error('Background images fetch error:', error);
+        throw new Error(`Failed to fetch background images: ${error.message}`);
+      }
+
+      // Transform to ImageWithUrl with resolved URLs
+      const imagesWithUrl: ImageWithUrl[] = (data || []).map((img: any) => ({
+        ...img,
+        url: this.resolveImageUrl(img.filename, 'background')
+      }));
+
+      this.backgroundImagesSignal.set(imagesWithUrl);
+      return imagesWithUrl;
+    } catch (error) {
+      console.error('Error fetching background images:', error);
+      throw error;
+    }
+  }
+
+  // Update image display name
+  async updateImageDisplayName(imageId: string, displayName: string, imageType: 'product' | 'background'): Promise<void> {
+    try {
+      const tableName = imageType === 'product' ? 'product_images' : 'background_images';
+      
+      const { error } = await this.supabase
+        .from(tableName)
+        .update({ 
+          display_name: displayName,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', imageId);
+
+      if (error) {
+        console.error('Update image name error:', error);
+        throw new Error(`Failed to update image name: ${error.message}`);
+      }
+
+      // Refresh the images list
+      const restaurantSlug = (globalThis as any).restaurantSlug || 'eiscafe-remi';
+      if (imageType === 'product') {
+        await this.fetchProductImages(restaurantSlug);
+      } else {
+        await this.fetchBackgroundImages(restaurantSlug);
+      }
+    } catch (error) {
+      console.error('Error updating image name:', error);
+      throw error;
+    }
+  }
+
+  // Generate user-friendly display name from filename
+  generateDisplayName(filename: string): string {
+    // Remove file extension
+    const nameWithoutExt = filename.split('.')[0];
+    
+    // Extract timestamp if present (format: timestamp_name)
+    const parts = nameWithoutExt.split('_');
+    if (parts.length > 1 && /^\d+$/.test(parts[0])) {
+      const timestamp = parts[0];
+      const namePart = parts.slice(1).join('_');
+      
+      // Convert snake_case to Title Case
+      const titleCase = namePart
+        .split('_')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+      
+      return `${titleCase} (${timestamp})`;
+    }
+    
+    // Fallback: convert filename to Title Case
+    return nameWithoutExt
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
   }
 
   // ===== ADMIN CRUD OPERATIONS =====

@@ -18,6 +18,7 @@ import { ImageSelectionDialogComponent } from './image-selection-dialog.componen
 import { ProductCardComponent } from '../../pages/products/components/product-card.component';
 import { CategoryCardComponent } from '../../pages/categories/components/category-card.component';
 import { Item } from '../../models/item.model';
+import { ImageWithUrl } from '../../models/image.model';
 
 export interface ProductCreateDialogData {
   restaurantSlug?: string;
