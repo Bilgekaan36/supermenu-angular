@@ -263,7 +263,15 @@ export class ProductEditDialogComponent implements OnInit {
       sort_order: this.form.get('sort_order')?.value || 0,
       restaurant_slug: getRestaurantSlug(),
       created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
+      metadata: {
+        ingredients: [],
+        allergens: [],
+        variants: []
+      },
+      category_settings: {
+        showSubProducts: false
+      }
     } as Item;
   }
 
@@ -285,7 +293,15 @@ export class ProductEditDialogComponent implements OnInit {
       sort_order: this.form.get('sort_order')?.value || 0,
       restaurant_slug: getRestaurantSlug(),
       created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
+      metadata: {
+        ingredients: [],
+        allergens: [],
+        variants: []
+      },
+      category_settings: {
+        showSubProducts: false
+      }
     } as Item;
   }
 }

@@ -266,10 +266,17 @@ export class ProductCreateDialogComponent implements OnInit {
       is_active: this.productForm.get('is_active')?.value || true,
       is_featured: this.productForm.get('is_featured')?.value || false,
       sort_order: this.productForm.get('sort_order')?.value || 0,
-      display_type: 'product',
       restaurant_slug: getRestaurantSlug(),
       created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
+      metadata: {
+        ingredients: [],
+        allergens: [],
+        variants: []
+      },
+      category_settings: {
+        showSubProducts: false
+      }
     } as Item;
   }
 
@@ -289,10 +296,17 @@ export class ProductCreateDialogComponent implements OnInit {
       is_active: this.productForm.get('is_active')?.value || true,
       is_featured: this.productForm.get('is_featured')?.value || false,
       sort_order: this.productForm.get('sort_order')?.value || 0,
-      display_type: 'category',
       restaurant_slug: getRestaurantSlug(),
       created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
+      metadata: {
+        ingredients: [],
+        allergens: [],
+        variants: []
+      },
+      category_settings: {
+        showSubProducts: false
+      }
     } as Item;
   }
 }
