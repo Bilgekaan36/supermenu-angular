@@ -556,6 +556,14 @@ export class SupabaseService {
       };
 
       console.info('[Supabase] Creating product:', itemData.title);
+      console.info('[Supabase] Creating item with fields:', Object.keys(itemData));
+      console.info('[Supabase] Item data details:', {
+        title: itemData.title,
+        titleType: typeof itemData.title,
+        titleLength: itemData.title?.length,
+        hasTitle: 'title' in itemData,
+        allFields: itemData
+      });
 
       const { data, error } = await this.supabase
         .from('items')

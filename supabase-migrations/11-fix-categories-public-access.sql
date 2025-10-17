@@ -7,7 +7,9 @@ BEGIN;
 -- Drop existing restrictive policy
 DROP POLICY IF EXISTS "categories_select_by_restaurant" ON public.categories;
 
--- Create new policy that allows public read access
+-- Create new policy that allows public read access (drop first if exists)
+DROP POLICY IF EXISTS "categories_public_read" ON public.categories;
+
 CREATE POLICY "categories_public_read"
   ON public.categories
   FOR SELECT

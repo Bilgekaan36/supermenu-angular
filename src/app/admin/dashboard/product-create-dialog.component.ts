@@ -196,6 +196,14 @@ export class ProductCreateDialogComponent implements OnInit {
           sort_order: parseInt(formData.sort_order)
         };
 
+        console.log('[Product Create] Form data:', formData);
+        console.log('[Product Create] Product data:', productData);
+        console.log('[Product Create] Title check:', { 
+          title: productData.title, 
+          titleType: typeof productData.title,
+          titleLength: productData.title?.length 
+        });
+
         // Service handles slug generation, validation, and insertion
         await this.supabase.createProduct(productData);
         
