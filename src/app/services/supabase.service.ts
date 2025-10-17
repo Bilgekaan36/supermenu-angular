@@ -683,6 +683,8 @@ export class SupabaseService {
 
   async fetchCategoriesFromTable(restaurantSlug: string): Promise<{ slug: string; title: string; subtitle?: string; icon?: string; textColor?: string }[]> {
     try {
+      console.log('🔍 fetchCategoriesFromTable called for:', restaurantSlug);
+      
       const { data, error } = await this.supabase
         .from('categories')
         .select('slug, title, subtitle, icon, text_color, sort_order')
@@ -690,16 +692,26 @@ export class SupabaseService {
         .eq('is_active', true)
         .order('sort_order', { ascending: true });
 
-      if (error) throw error;
-      return (data || []).map((c) => ({
+      console.log('📊 Categories table query result:', { dataCount: data?.length, error });
+      
+      if (error) {
+        console.error('❌ Categories table fetch error:', error);
+        throw error;
+      }
+      
+      const result = (data || []).map((c) => ({
         slug: c.slug,
         title: c.title,
         subtitle: c.subtitle,
         icon: c.icon,
         textColor: c.text_color,
       }));
+      
+      console.log('✅ Categories from table fetched:', result.length, 'categories');
+      console.log('📋 Categories data:', result);
+      return result;
     } catch (error) {
-      console.error('Error fetching categories from table:', error);
+      console.error('❌ Error fetching categories from table:', error);
       return [];
     }
   }
