@@ -9,11 +9,29 @@
       "route": "/eiscafe-remi/*",
       "serve": "/index.html",
       "statusCode": 200
+    },
+    {
+      "route": "/admin/login",
+      "serve": "/index.html",
+      "statusCode": 200
+    },
+    {
+      "route": "/login",
+      "serve": "/index.html",
+      "statusCode": 200
+    },
+    {
+      "route": "/logout",
+      "serve": "/index.html",
+      "statusCode": 200
     }
   ],
   "navigationFallback": {
     "rewrite": "/index.html",
     "exclude": ["/images/*.{png,jpg,jpeg,gif,svg,ico,webp}", "/assets/*", "/*.{js,css}"]
+  },
+  "platform": {
+    "apiRuntime": "node:20"
   },
   "mimeTypes": {
     ".json": "application/json",
