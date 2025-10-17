@@ -3,11 +3,6 @@
     {
       "route": "/admin/*",
       "allowedRoles": ["authenticated"]
-    },
-    {
-      "route": "/*",
-      "serve": "/index.html",
-      "statusCode": 200
     }
   ],
   "navigationFallback": {
