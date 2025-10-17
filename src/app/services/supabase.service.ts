@@ -288,21 +288,31 @@ export class SupabaseService {
       return storagePath;
     }
     
+    // Debug logging for Azure deployment
+    console.log('🔧 resolveImageUrl called:', {
+      storagePath,
+      type,
+      environmentUrl: environment.supabaseUrl,
+      isProduction: environment.production
+    });
+    
     // Handle different path formats
     if (storagePath.startsWith('/')) {
-      if (type === 'product') {
-        return `${environment.supabaseUrl}/storage/v1/object/public/product-images${storagePath}`;
-      } else {
-        return `${environment.supabaseUrl}/storage/v1/object/public/background-images${storagePath}`;
-      }
+      const url = type === 'product' 
+        ? `${environment.supabaseUrl}/storage/v1/object/public/product-images${storagePath}`
+        : `${environment.supabaseUrl}/storage/v1/object/public/background-images${storagePath}`;
+      
+      console.log('🔗 Generated URL (starts with /):', url);
+      return url;
     }
     
     // Default handling
-    if (type === 'product') {
-      return `${environment.supabaseUrl}/storage/v1/object/public/product-images/${storagePath}`;
-    } else {
-      return `${environment.supabaseUrl}/storage/v1/object/public/background-images/${storagePath}`;
-    }
+    const url = type === 'product'
+      ? `${environment.supabaseUrl}/storage/v1/object/public/product-images/${storagePath}`
+      : `${environment.supabaseUrl}/storage/v1/object/public/background-images/${storagePath}`;
+    
+    console.log('🔗 Generated URL (default):', url);
+    return url;
   }
 
   // Generate user-friendly display name from storage path
