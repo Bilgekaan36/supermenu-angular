@@ -49,6 +49,7 @@ export interface ProductCreateDialogData {
 export class ProductCreateDialogComponent implements OnInit {
   productForm: FormGroup;
   isSubmitting = false;
+  private lastSubmitTime = 0;
   selectedProductImage?: string;
   selectedBackgroundImage?: string;
   previewMode: 'normal' | 'featured' = 'normal';
@@ -173,8 +174,24 @@ export class ProductCreateDialogComponent implements OnInit {
   }
 
   async onSubmit(): Promise<void> {
+    const now = Date.now();
+    console.log('[Product Create] onSubmit called:', {
+      formValid: this.productForm.valid,
+      isSubmitting: this.isSubmitting,
+      timeSinceLastSubmit: now - this.lastSubmitTime,
+      timestamp: new Date().toISOString()
+    });
+
+    // Prevent double submission within 2 seconds
+    if (now - this.lastSubmitTime < 2000) {
+      console.log('[Product Create] Ignoring double submission');
+      return;
+    }
+
     if (this.productForm.valid && !this.isSubmitting) {
       this.isSubmitting = true;
+      this.lastSubmitTime = now;
+      console.log('[Product Create] Starting submission...');
       try {
         const formData = this.productForm.value;
         
@@ -217,6 +234,7 @@ export class ProductCreateDialogComponent implements OnInit {
           { duration: 5000 }
         );
       } finally {
+        console.log('[Product Create] Setting isSubmitting to false');
         this.isSubmitting = false;
       }
     }
