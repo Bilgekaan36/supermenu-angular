@@ -1,10 +1,6 @@
 {
   "routes": [
     {
-      "route": "/admin/*",
-      "allowedRoles": ["authenticated"]
-    },
-    {
       "route": "/eiscafe-remi",
       "serve": "/index.html",
       "statusCode": 200
@@ -13,18 +9,6 @@
       "route": "/eiscafe-remi/*",
       "serve": "/index.html",
       "statusCode": 200
-    },
-    {
-      "route": "/login",
-      "rewrite": "/.auth/login/github"
-    },
-    {
-      "route": "/logout",
-      "redirect": "/.auth/logout"
-    },
-    {
-      "route": "/.auth/login/*",
-      "statusCode": 404
     }
   ],
   "navigationFallback": {
