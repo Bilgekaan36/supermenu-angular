@@ -3,6 +3,11 @@
     {
       "route": "/admin/*",
       "allowedRoles": ["authenticated"]
+    },
+    {
+      "route": "/eiscafe-remi/*",
+      "serve": "/index.html",
+      "statusCode": 200
     }
   ],
   "navigationFallback": {
