@@ -6,7 +6,7 @@ export function getRestaurantSlug(): string {
 
 export function formatPrice(price?: number): string {
   if (!price) return '';
-  return `${price.toFixed(2)} €`;
+  return `${price.toFixed(2)} ₺`;
 }
 
 export function getImageScale(scale: 'xs' | 'sm' | 'md' | 'lg' | 'xl'): string {

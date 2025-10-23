@@ -8,7 +8,7 @@ export function getRestaurantSlug(): string {
 
 export function formatPrice(price?: number): string {
   if (!price) return '';
-  return `€${price.toFixed(2).replace('.', ',')}`;
+  return `₺${price.toFixed(2).replace('.', ',')}`;
 }
 
 // Generate URL-safe slugs from titles
